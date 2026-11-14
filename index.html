@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zuno | Make Studying Click</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f7ff;
+  color: #211d38;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 8%;
+  background: white;
+}
+
+.logo {
+  font-size: 32px;
+  font-weight: 900;
+  color: #805ce3;
+}
+
+nav a {
+  margin-left: 22px;
+  text-decoration: none;
+  color: #514b68;
+}
+
+.hero {
+  text-align: center;
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #eee8ff, #e6fff6);
+}
+
+.hero h1 {
+  font-size: clamp(42px, 7vw, 72px);
+  margin-bottom: 20px;
+}
+
+.hero h1 span {
+  color: #805ce3;
+}
+
+.hero p {
+  font-size: 19px;
+  color: #69627c;
+  line-height: 1.6;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 16px 28px;
+  background: #805ce3;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+section {
+  padding: 70px 8%;
+  text-align: center;
+}
+
+section h2 {
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+
+.sub {
+  color: #777187;
+  margin-bottom: 35px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 22px;
+  text-align: left;
+}
+
+.card {
+  background: white;
+  padding: 28px;
+  border-radius: 22px;
+  box-shadow: 0 5px 22px #2520440c;
+}
+
+.emoji {
+  font-size: 38px;
+  margin-bottom: 18px;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #777187;
+  line-height: 1.5;
+}
+
+.card button {
+  margin-top: 18px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #eee8ff;
+  color: #6745c5;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.demo {
+  background: #211d38;
+  color: white;
+  border-radius: 25px;
+  padding: 35px;
+  max-width: 650px;
+  margin: 30px auto;
+}
+
+.demo input {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+#result {
+  margin-top: 20px;
+  color: #d8cbff;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 35px;
+  color: #777187;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">zuno.</div>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#demo">Try Zuno</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>Make studying <span>click.</span></h1>
+  <p>
+    Your personal AI study companion.<br>
+    Learn smarter, stay organized and reach your goals.
+  </p>
+  <a class="btn" href="#features">Explore Zuno →</a>
+</div>
+
+<section id="features">
+  <h2>Everything you need to learn.</h2>
+  <p class="sub">Meet your new favorite study tools.</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="emoji">🤖</div>
+      <h3>AI Tutor</h3>
+      <p>Get help understanding difficult topics.</p>
+      <button onclick="tryTool('AI Tutor')">Explore tool</button>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🗂️</div>
+      <h3>Flashcards</h3>
+      <p>Turn your notes into study flashcards.</p>
+      <button onclick="tryTool('Flashcards')">Explore tool</button>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📝</div>
+      <h3>Quiz Maker</h3>
+      <p>Practice what you've learned with quizzes.</p>
+      <button onclick="tryTool('Quiz Maker')">Explore tool</button>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📚</div>
+      <h3>Ask Your Notes</h3>
+      <p>Get answers based on your study materials.</p>
+      <button onclick="tryTool('Ask Your Notes')">Explore tool</button>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📅</div>
+      <h3>Study Planner</h3>
+      <p>Organize assignments and study sessions.</p>
+      <button onclick="tryTool('Study Planner')">Explore tool</button>
+    </div>
+
+  </div>
+</section>
+
+<section id="demo">
+  <h2>Meet your study companion.</h2>
+  <p class="sub">Try our first interactive demo.</p>
+
+  <div class="demo">
+    <h3>✨ What do you want to learn?</h3>
+
+    <input
+      id="topic"
+      placeholder="Example: Photosynthesis"
+    >
+
+    <button class="btn" onclick="explain()">
+      Explain it!
+    </button>
+
+    <div id="result"></div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Zuno. Study smarter. Go further.
+</footer>
+
+<script>
+function tryTool(name) {
+  document.getElementById("result").textContent =
+    name + " is coming soon! We're building it.";
+
+  document.getElementById("demo").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function explain() {
+  const topic = document.getElementById("topic").value.trim();
+
+  document.getElementById("result").textContent = topic
+    ? "Great topic! The live Zuno AI Tutor is coming soon."
+    : "Enter a topic first!";
+}
+</script>
+
+</body>
+</html>
