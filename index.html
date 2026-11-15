@@ -363,6 +363,45 @@
     .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
     .del-btn:hover { color: var(--danger); }
 
+    /* Pricing Section */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .price-card.featured {
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.15);
+      position: relative;
+    }
+    .price-card.featured::before {
+      content: 'POPULAR';
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: var(--gold);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+    .price-card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .price { font-size: 2.5rem; font-weight: 800; margin: 1rem 0; color: var(--text); }
+    .price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
+    .features-list { list-style: none; margin: 1.5rem 0; display: flex; flex-direction: column; gap: 0.75rem; color: var(--muted); font-size: 0.95rem; }
+    .features-list li::before { content: '✓ '; color: var(--success); font-weight: bold; }
+
     .theme-selector {
       display: flex;
       gap: 0.5rem;
@@ -409,7 +448,8 @@
       <button class="nav-btn" id="nav-essay" onclick="switchView('essay')">Essay Builder</button>
       <button class="nav-btn" id="nav-notes" onclick="switchView('notes')">Note Vault</button>
       <button class="nav-btn" id="nav-planner" onclick="switchView('planner')">Planner & Timer</button>
-      <button class="pro-nav-btn" onclick="switchView('settings')">⚙️ Settings</button>
+      <button class="pro-nav-btn" onclick="switchView('pricing')">⭐ Pricing</button>
+      <button class="nav-btn" onclick="switchView('settings')">⚙️ Settings</button>
       <div class="ai-badge">
         <span class="api-status-dot"></span>
         <span>Pro Active</span>
@@ -624,7 +664,45 @@
       </div>
     </div>
 
-    <!-- 8. SETTINGS & THEMES VIEW -->
+    <!-- 8. PRICING VIEW ($7.99 / COMING SOON) -->
+    <div id="view-pricing" class="view">
+      <div class="dashboard-hero" style="margin-bottom: 2rem;">
+        <h1>Unlock <span>Zuno Pro.</span></h1>
+        <p>Choose your plan and elevate your academic performance.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div>
+            <h3>Free Student</h3>
+            <div class="price">$0 <span>/ forever</span></div>
+            <ul class="features-list">
+              <li>Standard AI Tutor explanations</li>
+              <li>Basic flashcard generator</li>
+              <li>Standard practice quizzes</li>
+              <li>Pomodoro focus timer & planner</li>
+            </ul>
+          </div>
+          <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border); width: 100%; margin-top: 1.5rem;" onclick="switchView('dashboard')">Current Plan</button>
+        </div>
+
+        <div class="price-card featured">
+          <div>
+            <h3>Zuno Pro</h3>
+            <div class="price">$7.99 <span>/ month</span></div>
+            <ul class="features-list">
+              <li>Unlimited high-speed AI generations</li>
+              <li>Essay & Outline Builder tool</li>
+              <li>Export flashcards & notes to TXT</li>
+              <li>Ambient focus audio generator</li>
+            </ul>
+          </div>
+          <button class="action-btn" style="background: var(--gold); color: #000; width: 100%; margin-top: 1.5rem; font-weight: 700;" onclick="alert('🔒 Zuno Pro Payments are launching soon! Stay tuned.')">Upgrade to Pro</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. SETTINGS & THEMES VIEW -->
     <div id="view-settings" class="view">
       <div class="workspace-box" style="max-width: 600px; margin: 0 auto;">
         <div class="workspace-header">
@@ -640,7 +718,7 @@
         </div>
         <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
           <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Account Status</h3>
-          <p style="color: var(--success); font-weight: 600;">✓ Zuno Pro Unlimited Lifetime Access Enabled</p>
+          <p style="color: var(--success); font-weight: 600;">✓ Zuno Pro Unlimited Access Enabled</p>
         </div>
       </div>
     </div>
