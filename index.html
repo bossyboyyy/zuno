@@ -26,22 +26,25 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    html { scroll-behavior: smooth; }
-
     body {
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Navigation */
     header {
-      max-width: 1100px;
+      max-width: 1200px;
+      width: 100%;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 1.25rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--border);
     }
 
     .logo {
@@ -49,6 +52,7 @@
       font-weight: 800;
       letter-spacing: -0.5px;
       color: var(--text);
+      cursor: pointer;
     }
 
     .logo span { color: var(--accent-light); }
@@ -56,18 +60,24 @@
     nav {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
-    nav a {
+    .nav-btn {
+      background: transparent;
+      border: 1px solid transparent;
       color: var(--muted);
-      text-decoration: none;
-      font-size: 0.95rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: color 0.2s;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    nav a:hover { color: var(--text); }
+    .nav-btn:hover { color: var(--text); background: var(--surface); }
+    .nav-btn.active { color: var(--text); background: var(--surface); border-color: var(--accent-light); }
 
     .ai-badge {
       background: rgba(16, 185, 129, 0.15);
@@ -75,7 +85,7 @@
       color: #6ee7b7;
       padding: 0.4rem 0.8rem;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -89,166 +99,106 @@
       box-shadow: 0 0 8px var(--success);
     }
 
-    /* Hero Section */
-    .hero {
-      max-width: 800px;
-      margin: 3.5rem auto 4.5rem;
-      padding: 0 1.5rem;
+    /* Main Container Views */
+    main {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* Dashboard View */
+    .dashboard-hero {
       text-align: center;
+      margin-bottom: 3rem;
     }
-
-    .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem);
+    .dashboard-hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
       font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -1.5px;
-      margin-bottom: 1.25rem;
+      letter-spacing: -1px;
+      margin-bottom: 0.75rem;
     }
-
-    .hero h1 span {
+    .dashboard-hero h1 span {
       background: linear-gradient(135deg, #a78bfa, #60a5fa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .dashboard-hero p { color: var(--muted); font-size: 1.1rem; }
 
-    .hero p {
-      color: var(--muted);
-      font-size: 1.15rem;
-      max-width: 540px;
-      margin: 0 auto 2rem;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      padding: 0.85rem 1.75rem;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 8px 24px var(--accent-glow);
-      transition: transform 0.2s, background 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover {
-      background: #6d28d9;
-      transform: translateY(-2px);
-    }
-
-    /* Tool Selector Cards */
-    .section {
-      max-width: 1100px;
-      margin: 0 auto 4rem;
-      padding: 0 1.5rem;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 2.25rem;
-    }
-
-    .section-header h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-
-    .section-header p { color: var(--muted); }
-
-    .grid {
+    .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin-bottom: 2.5rem;
     }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-card h4 { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem; }
+    .stat-card .val { font-size: 1.75rem; font-weight: 700; color: var(--accent-light); }
 
-    .card {
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .dash-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 1.35rem;
+      padding: 1.75rem;
       cursor: pointer;
       transition: all 0.2s;
-      text-align: left;
     }
+    .dash-card:hover { border-color: var(--accent-light); transform: translateY(-3px); }
+    .dash-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .dash-card h3 { font-size: 1.2rem; margin-bottom: 0.4rem; }
+    .dash-card p { color: var(--muted); font-size: 0.92rem; }
 
-    .card:hover {
-      border-color: var(--accent-light);
-      transform: translateY(-3px);
-    }
-
-    .card.active {
-      border-color: var(--accent-light);
-      background: var(--surface-hover);
-      box-shadow: 0 0 0 1px var(--accent-light), 0 10px 25px rgba(124, 58, 237, 0.15);
-    }
-
-    .card-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
-    .card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
-    .card p { color: var(--muted); font-size: 0.85rem; line-height: 1.4; }
-
-    /* Active Workspace */
-    .workspace {
-      max-width: 820px;
-      margin: 0 auto;
+    /* Tool Workspace Styles */
+    .workspace-box {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 2rem;
     }
-
-    .tool-panel { display: none; }
-    .tool-panel.active { display: block; }
-
-    .tool-title {
+    .workspace-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
       flex-wrap: wrap;
       gap: 0.5rem;
     }
-
-    .tool-title h3 { font-size: 1.3rem; }
-    .mode-badge {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 999px;
-      background: rgba(16, 185, 129, 0.15);
-      color: #6ee7b7;
-      font-weight: 600;
-    }
+    .workspace-header h2 { font-size: 1.4rem; }
 
     .prompt-pills {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
-
     .pill {
       background: var(--bg);
       border: 1px solid var(--border);
       color: var(--muted);
       padding: 0.4rem 0.85rem;
       border-radius: 999px;
-      font-size: 0.83rem;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
     }
+    .pill:hover { color: var(--text); border-color: var(--accent-light); }
 
-    .pill:hover {
-      color: var(--text);
-      border-color: var(--accent-light);
-    }
-
-    .input-row {
-      display: flex;
-      gap: 0.75rem;
-    }
-
+    .input-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
     input[type="text"], input[type="date"], textarea {
       width: 100%;
       background: var(--bg);
@@ -259,13 +209,7 @@
       font-size: 0.98rem;
       outline: none;
     }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-      margin-bottom: 0.75rem;
-    }
-
+    textarea { min-height: 120px; resize: vertical; margin-bottom: 0.75rem; }
     input:focus, textarea:focus { border-color: var(--accent-light); }
 
     .action-btn {
@@ -279,7 +223,6 @@
       white-space: nowrap;
       transition: background 0.2s;
     }
-
     .action-btn:hover { background: #6d28d9; }
     .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
@@ -295,40 +238,32 @@
       display: none;
     }
 
-    /* Interactive Flashcards */
+    /* Flashcards */
     .flashcards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 1rem;
       margin-top: 1.5rem;
     }
-
     .flashcard {
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.5rem;
-      min-height: 150px;
+      min-height: 160px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       cursor: pointer;
       transition: border-color 0.2s, transform 0.2s;
     }
-
     .flashcard:hover { border-color: var(--accent-light); transform: translateY(-2px); }
     .flashcard.flipped { background: #181c2e; border-color: var(--accent-light); }
-    .flashcard-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--accent-light);
-      font-weight: 700;
-    }
+    .flashcard-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); font-weight: 700; }
     .flashcard-text { font-size: 1rem; margin: 0.75rem 0; font-weight: 500; }
     .flashcard-hint { font-size: 0.78rem; color: var(--muted); }
 
-    /* Interactive Quiz */
+    /* Quiz */
     .quiz-item {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -352,7 +287,25 @@
     .quiz-opt.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); color: #6ee7b7; }
     .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: #fca5a5; }
 
-    /* Study Planner */
+    /* Focus Timer Widget */
+    .timer-container {
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .timer-display {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--accent-light);
+      margin: 1rem 0;
+    }
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    /* Planner */
     .planner-list {
       margin-top: 1.25rem;
       display: flex;
@@ -377,31 +330,35 @@
     /* Footer */
     footer {
       border-top: 1px solid var(--border);
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1.5rem;
       text-align: center;
       color: var(--muted);
       font-size: 0.9rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
     }
-
-    .counter-badge img { height: 24px; opacity: 0.85; transition: opacity 0.2s; }
-    .counter-badge img:hover { opacity: 1; }
+    .counter-badge img { height: 22px; opacity: 0.85; }
 
     @media (max-width: 650px) {
       .input-row { flex-direction: column; }
+      header { flex-direction: column; gap: 1rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Navigation Bar -->
   <header>
-    <div class="logo">zuno<span>.</span></div>
+    <div class="logo" onclick="switchView('dashboard')">zuno<span>.</span></div>
     <nav>
-      <a href="#workspace-section">Tools</a>
+      <button class="nav-btn active" id="nav-dashboard" onclick="switchView('dashboard')">Dashboard</button>
+      <button class="nav-btn" id="nav-tutor" onclick="switchView('tutor')">AI Tutor</button>
+      <button class="nav-btn" id="nav-flashcards" onclick="switchView('flashcards')">Flashcards</button>
+      <button class="nav-btn" id="nav-quiz" onclick="switchView('quiz')">Quiz Arena</button>
+      <button class="nav-btn" id="nav-notes" onclick="switchView('notes')">Note Vault</button>
+      <button class="nav-btn" id="nav-planner" onclick="switchView('planner')">Planner & Timer</button>
       <div class="ai-badge">
         <span class="api-status-dot"></span>
         <span>AI Online</span>
@@ -409,81 +366,82 @@
     </nav>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <h1>Make studying <span>click.</span></h1>
-    <p>
-      Your personal AI study companion. Learn smarter, test yourself, and stay organized—instantly.
-    </p>
-    <a href="#workspace-section" class="btn-primary">Start Studying →</a>
-  </section>
+  <!-- Main Content Area -->
+  <main>
 
-  <!-- Interactive Study Workspace -->
-  <section id="workspace-section" class="section">
-    <div class="section-header">
-      <h2>Choose your study tool.</h2>
-      <p>Click any card below to launch it.</p>
+    <!-- 1. DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view active">
+      <div class="dashboard-hero">
+        <h1>Make studying <span>click.</span></h1>
+        <p>Pick a tool below or check your stats to get started.</p>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-card">
+          <h4>Study Streak</h4>
+          <div class="val" id="statStreak">🔥 3 Days</div>
+        </div>
+        <div class="stat-card">
+          <h4>Tools Explored</h4>
+          <div class="val" id="statXP">⚡ Active</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card" onclick="switchView('tutor')">
+          <div class="icon">🤖</div>
+          <h3>AI Tutor</h3>
+          <p>Get clear, step-by-step breakdowns for any tough concept.</p>
+        </div>
+        <div class="dash-card" onclick="switchView('flashcards')">
+          <div class="icon">🗂️</div>
+          <h3>Flashcards</h3>
+          <p>Generate smart interactive flip-cards in seconds.</p>
+        </div>
+        <div class="dash-card" onclick="switchView('quiz')">
+          <div class="icon">📝</div>
+          <h3>Quiz Arena</h3>
+          <p>Test your knowledge with custom AI multiple-choice quizzes.</p>
+        </div>
+        <div class="dash-card" onclick="switchView('notes')">
+          <div class="icon">📚</div>
+          <h3>Note Vault</h3>
+          <p>Paste your class notes to summarize and answer questions.</p>
+        </div>
+        <div class="dash-card" onclick="switchView('planner')">
+          <div class="icon">📅</div>
+          <h3>Planner & Focus Timer</h3>
+          <p>Organize assignments and lock in with Pomodoro focus blocks.</p>
+        </div>
+      </div>
     </div>
 
-    <!-- 5 Tool Cards -->
-    <div class="grid">
-      <div class="card active" onclick="switchTool('tutor', this)">
-        <div class="card-icon">🤖</div>
-        <h3>AI Tutor</h3>
-        <p>Step-by-step explanations for any tough topic.</p>
-      </div>
-
-      <div class="card" onclick="switchTool('flashcards', this)">
-        <div class="card-icon">🗂️</div>
-        <h3>Flashcards</h3>
-        <p>Generate interactive flip-cards in seconds.</p>
-      </div>
-
-      <div class="card" onclick="switchTool('quiz', this)">
-        <div class="card-icon">📝</div>
-        <h3>Quiz Maker</h3>
-        <p>Take custom practice quizzes before test day.</p>
-      </div>
-
-      <div class="card" onclick="switchTool('notes', this)">
-        <div class="card-icon">📚</div>
-        <h3>Ask Your Notes</h3>
-        <p>Paste notes and get instant answers & summaries.</p>
-      </div>
-
-      <div class="card" onclick="switchTool('planner', this)">
-        <div class="card-icon">📅</div>
-        <h3>Study Planner</h3>
-        <p>Track assignments, tests, and study goals.</p>
-      </div>
-    </div>
-
-    <!-- Dynamic Workspace Box -->
-    <div class="workspace">
-
-      <!-- 1. AI TUTOR -->
-      <div id="panel-tutor" class="tool-panel active">
-        <div class="tool-title">
-          <h3>🤖 AI Tutor</h3>
-          <span class="mode-badge">⚡ Live AI Powered</span>
+    <!-- 2. AI TUTOR VIEW -->
+    <div id="view-tutor" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>🤖 AI Study Tutor</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Powered by Zuno AI</span>
         </div>
         <div class="prompt-pills">
-          <button class="pill" onclick="quickTutor('Explain photosynthesis simply')">Explain photosynthesis</button>
-          <button class="pill" onclick="quickTutor('How do you solve quadratic equations?')">Quadratic equations</button>
+          <button class="pill" onclick="quickTutor('Explain photosynthesis simply')">Photosynthesis</button>
+          <button class="pill" onclick="quickTutor('How do you solve quadratic equations?')">Quadratic Equations</button>
           <button class="pill" onclick="quickTutor('Summarize the causes of World War I')">Causes of WWI</button>
         </div>
         <div class="input-row">
-          <input type="text" id="tutorInput" placeholder="Ask any question or enter a topic to explain..." />
+          <input type="text" id="tutorInput" placeholder="Ask any question or enter a study topic..." />
           <button class="action-btn" id="tutorBtn" onclick="runTutor()">Ask Zuno</button>
         </div>
         <div id="tutorOutput" class="output-box"></div>
       </div>
+    </div>
 
-      <!-- 2. FLASHCARDS -->
-      <div id="panel-flashcards" class="tool-panel">
-        <div class="tool-title">
-          <h3>🗂️ Flashcard Generator</h3>
-          <span class="mode-badge">Click cards to flip</span>
+    <!-- 3. FLASHCARDS VIEW -->
+    <div id="view-flashcards" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>🗂️ Flashcard Generator</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Click any card to flip</span>
         </div>
         <div class="prompt-pills">
           <button class="pill" onclick="quickCards('Spanish basic greetings')">Spanish Greetings</button>
@@ -491,17 +449,19 @@
           <button class="pill" onclick="quickCards('Algebra 1 formulas')">Algebra Formulas</button>
         </div>
         <div class="input-row">
-          <input type="text" id="cardsInput" placeholder="Enter a topic (e.g., US Presidents, Physics forces)..." />
+          <input type="text" id="cardsInput" placeholder="Enter topic (e.g., US Presidents, Physics forces)..." />
           <button class="action-btn" id="cardsBtn" onclick="runFlashcards()">Create Cards</button>
         </div>
         <div id="cardsContainer" class="flashcards-grid"></div>
       </div>
+    </div>
 
-      <!-- 3. QUIZ MAKER -->
-      <div id="panel-quiz" class="tool-panel">
-        <div class="tool-title">
-          <h3>📝 Practice Quiz Maker</h3>
-          <span class="mode-badge">Instant Grading</span>
+    <!-- 4. QUIZ ARENA VIEW -->
+    <div id="view-quiz" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>📝 Practice Quiz Arena</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Instant grading</span>
         </div>
         <div class="prompt-pills">
           <button class="pill" onclick="quickQuiz('American Revolution')">American Revolution</button>
@@ -514,39 +474,57 @@
         </div>
         <div id="quizContainer"></div>
       </div>
+    </div>
 
-      <!-- 4. ASK YOUR NOTES -->
-      <div id="panel-notes" class="tool-panel">
-        <div class="tool-title">
-          <h3>📚 Ask Your Notes</h3>
-          <span class="mode-badge">Summary & Q&A</span>
+    <!-- 5. NOTE VAULT VIEW -->
+    <div id="view-notes" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>📚 Note Vault & Summary</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Summary & Q&A</span>
         </div>
         <textarea id="notesText" placeholder="Paste your class notes, article, or study guide here..."></textarea>
         <div class="input-row">
-          <input type="text" id="notesQuestion" placeholder="Ask a question about your notes (or leave blank to summarize)..." />
+          <input type="text" id="notesQuestion" placeholder="Ask a question about your notes (optional)..." />
           <button class="action-btn" id="notesBtn" onclick="runNotes()">Analyze Notes</button>
         </div>
         <div id="notesOutput" class="output-box"></div>
       </div>
+    </div>
 
-      <!-- 5. STUDY PLANNER -->
-      <div id="panel-planner" class="tool-panel">
-        <div class="tool-title">
-          <h3>📅 Study Planner</h3>
-          <span class="mode-badge">Auto-Saved</span>
+    <!-- 6. PLANNER & TIMER VIEW -->
+    <div id="view-planner" class="view">
+      <div class="workspace-box" style="margin-bottom: 2rem;">
+        <div class="workspace-header">
+          <h2>⏱️ Pomodoro Focus Timer</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">25m Focus / 5m Break</span>
+        </div>
+        <div class="timer-container">
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="timer-controls">
+            <button class="action-btn" onclick="startTimer()">Start Focus</button>
+            <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border);" onclick="resetTimer()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>📅 Study Planner</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Auto-saved</span>
         </div>
         <div class="input-row">
-          <input type="text" id="taskInput" placeholder="Add assignment, test, or study session..." />
+          <input type="text" id="taskInput" placeholder="Add assignment, test, or study goal..." />
           <input type="date" id="taskDate" style="max-width: 170px;" />
           <button class="action-btn" onclick="addTask()">Add Task</button>
         </div>
         <div id="plannerList" class="planner-list"></div>
       </div>
-
     </div>
-  </section>
 
-  <!-- Footer with Live Visitor Counter -->
+  </main>
+
+  <!-- Footer -->
   <footer>
     <div>© 2026 Zuno. Study smarter. Go further.</div>
     <div class="counter-badge">
@@ -557,21 +535,23 @@
   </footer>
 
   <script>
-    // --- FREE PUBLIC AI ENGINE (No API Key Required) ---
+    // --- VIEW SWITCHER ---
+    function switchView(viewName) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(`view-${viewName}`).classList.add('active');
+      const navBtn = document.getElementById(`nav-${viewName}`);
+      if (navBtn) navBtn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- FREE PUBLIC AI ENGINE ---
     async function callAI(promptText) {
       const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error('AI request failed.');
       return await res.text();
-    }
-
-    // --- SWITCH TOOLS ---
-    function switchTool(toolName, cardEl) {
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-      cardEl.classList.add('active');
-
-      document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById(`panel-${toolName}`).classList.add('active');
     }
 
     // --- 1. AI TUTOR ---
@@ -661,7 +641,7 @@
       }
     }
 
-    // --- 3. QUIZ MAKER ---
+    // --- 3. QUIZ ARENA ---
     function quickQuiz(t) {
       document.getElementById('quizInput').value = t;
       runQuiz();
@@ -725,7 +705,7 @@
       }
     }
 
-    // --- 4. ASK YOUR NOTES ---
+    // --- 4. NOTE VAULT ---
     async function runNotes() {
       const notes = document.getElementById('notesText').value.trim();
       const question = document.getElementById('notesQuestion').value.trim();
@@ -753,7 +733,38 @@
       }
     }
 
-    // --- 5. STUDY PLANNER ---
+    // --- 5. POMODORO TIMER ---
+    let timerInterval = null;
+    let timeLeft = 25 * 60;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      document.getElementById('timerDisplay').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert('Focus session complete! Take a 5-minute break.');
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+    }
+
+    // --- 6. STUDY PLANNER ---
     let tasks = JSON.parse(localStorage.getItem('zuno_tasks') || '[]');
     if (tasks.length === 0) {
       tasks = [
@@ -803,6 +814,7 @@
     }
 
     renderTasks();
+    updateTimerDisplay();
   </script>
 
 </body>
