@@ -238,7 +238,7 @@
     .pill:hover { color: var(--text); border-color: var(--accent-light); }
 
     .input-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
-    input[type="text"], input[type="date"], select, textarea {
+    input[type="text"], input[type="password"], input[type="date"], select, textarea {
       width: 100%;
       background: var(--bg);
       border: 1px solid var(--border);
@@ -664,7 +664,7 @@
       </div>
     </div>
 
-    <!-- 8. PRICING VIEW ($7.99 / COMING SOON) -->
+    <!-- 8. PRICING VIEW -->
     <div id="view-pricing" class="view">
       <div class="dashboard-hero" style="margin-bottom: 2rem;">
         <h1>Unlock <span>Zuno Pro.</span></h1>
@@ -702,7 +702,7 @@
       </div>
     </div>
 
-    <!-- 9. SETTINGS & THEMES VIEW -->
+    <!-- 9. SETTINGS & SECRET COUNTER VIEW -->
     <div id="view-settings" class="view">
       <div class="workspace-box" style="max-width: 600px; margin: 0 auto;">
         <div class="workspace-header">
@@ -720,6 +720,31 @@
           <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Account Status</h3>
           <p style="color: var(--success); font-weight: 600;">✓ Zuno Pro Unlimited Access Enabled</p>
         </div>
+
+        <!-- SECRET VISITOR COUNTER WAY AT THE BOTTOM -->
+        <div style="margin-top: 3rem; border-top: 1px dashed var(--border); padding-top: 2rem;">
+          <h3 style="font-size: 1rem; color: var(--muted); margin-bottom: 0.5rem;">🔒 Admin Secret Access</h3>
+          <div id="secretLockBox">
+            <div class="input-row" style="margin-bottom: 0.5rem;">
+              <input type="password" id="secretCodeInput" placeholder="Enter secret code..." />
+              <button class="action-btn" onclick="checkSecretCode()">Unlock</button>
+            </div>
+            <p id="secretError" style="color: var(--danger); font-size: 0.8rem; display: none;">Incorrect code.</p>
+          </div>
+
+          <div id="secretAdminPanel" style="display: none; margin-top: 1rem; background: var(--bg); padding: 1.25rem; border-radius: 10px; border: 1px solid var(--accent-light);">
+            <h4 style="color: var(--accent-light); margin-bottom: 0.75rem;">📊 Private Site Analytics & Counter</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="color: var(--muted);">Live Visitor Counter:</span>
+              <div class="counter-badge">
+                <a href="https://librecounter.org/bossyboyyy.github.io/show" target="_blank" rel="noopener">
+                  <img src="https://librecounter.org/counter.svg" referrerpolicy="unsafe-url" alt="Visitor counter" />
+                </a>
+              </div>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--muted);">This counter is hidden from public view and only accessible using your secret code.</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -727,11 +752,6 @@
 
   <footer>
     <div>© 2026 Zuno Pro. Study smarter. Go further.</div>
-    <div class="counter-badge">
-      <a href="https://librecounter.org/bossyboyyy.github.io/show" target="_blank" rel="noopener">
-        <img src="https://librecounter.org/counter.svg" referrerpolicy="unsafe-url" alt="Visitor counter" />
-      </a>
-    </div>
   </footer>
 
   <script>
@@ -761,6 +781,34 @@
     const savedTheme = localStorage.getItem('zuno_theme');
     if (savedTheme) setTheme(savedTheme);
 
+    // Secret Code Admin Unlock Logic
+    function checkSecretCode() {
+      const code = document.getElementById('secretCodeInput').value.trim();
+      const errorMsg = document.getElementById('secretError');
+      const lockBox = document.getElementById('secretLockBox');
+      const adminPanel = document.getElementById('secretAdminPanel');
+
+      if (code === '693950121') {
+        lockBox.style.display = 'none';
+        adminPanel.style.display = 'block';
+        localStorage.setItem('zuno_admin_unlocked', 'true');
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    // Remember admin unlock session
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('zuno_admin_unlocked') === 'true') {
+        const lockBox = document.getElementById('secretLockBox');
+        const adminPanel = document.getElementById('secretAdminPanel');
+        if (lockBox && adminPanel) {
+          lockBox.style.display = 'none';
+          adminPanel.style.display = 'block';
+        }
+      }
+    });
+
     async function callAI(promptText) {
       const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}`;
       const res = await fetch(url);
@@ -788,6 +836,7 @@
       }
     }
 
+    // AI Tutor
     function quickTutor(q) {
       document.getElementById('tutorInput').value = q;
       runTutor();
@@ -818,6 +867,7 @@
       }
     }
 
+    // Flashcards
     function quickCards(t) {
       document.getElementById('cardsInput').value = t;
       runFlashcards();
@@ -865,8 +915,7 @@
         renderCards([
           { front: `Key Term: ${topic}`, back: `Core concept and professional definition.` },
           { front: `Significance`, back: `Why this matters in examinations.` },
-          { front: `Application`, back: `Practical real-world scenario.` },
-          { front: `Summary Review`, back: `Mastery checkpoint.` }
+          { front: `Application`, back: `Practical real-world scenario.` }
         ]);
       } finally {
         btn.disabled = false;
@@ -874,37 +923,10 @@
       }
     }
 
+    // Quiz Arena
     function quickQuiz(t) {
       document.getElementById('quizInput').value = t;
       runQuiz();
-    }
-
-    function renderQuiz(questions) {
-      const container = document.getElementById('quizContainer');
-      container.innerHTML = '';
-      questions.forEach((item, idx) => {
-        const box = document.createElement('div');
-        box.className = 'quiz-item';
-        box.innerHTML = `<div class="quiz-q">${idx + 1}. ${item.q}</div><div class="quiz-options"></div>`;
-        const optsDiv = box.querySelector('.quiz-options');
-
-        item.options.forEach((opt, optIdx) => {
-          const btn = document.createElement('button');
-          btn.className = 'quiz-opt';
-          btn.textContent = opt;
-          btn.onclick = () => {
-            optsDiv.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
-            if (optIdx === item.answerIndex) {
-              btn.classList.add('correct');
-            } else {
-              btn.classList.add('wrong');
-              optsDiv.children[item.answerIndex]?.classList.add('correct');
-            }
-          };
-          optsDiv.appendChild(btn);
-        });
-        container.appendChild(box);
-      });
     }
 
     async function runQuiz() {
@@ -914,207 +936,148 @@
       if (!topic) return;
 
       btn.disabled = true;
-      btn.textContent = 'Building Quiz...';
-      container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">Generating exam questions...</p>';
+      btn.textContent = 'Building...';
+      container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">Generating custom quiz questions...</p>';
 
       try {
-        const prompt = `Create a 3-question multiple choice quiz about "${topic}". Return ONLY valid JSON with no markdown backticks in this exact format: [{"q":"Question text","options":["Option A","Option B","Option C","Option D"],"answerIndex":0}]`;
+        const prompt = `Create 3 multiple choice questions about "${topic}". Return ONLY valid JSON in this exact format with no markdown backticks: [{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0}] where correct is the 0-indexed correct option.`;
         const aiReply = await callAI(prompt);
         const cleaned = aiReply.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
-        renderQuiz(parsed);
+        const questions = JSON.parse(cleaned);
+
+        container.innerHTML = '';
+        questions.forEach((q, qIndex) => {
+          const qDiv = document.createElement('div');
+          qDiv.className = 'quiz-item';
+          qDiv.innerHTML = `
+            <div class="quiz-q">Q${qIndex + 1}: ${q.question}</div>
+            <div class="quiz-options">
+              ${q.options.map((opt, optIndex) => `
+                <button class="quiz-opt" onclick="checkQuizAnswer(this, ${optIndex}, ${q.correct})">${opt}</button>
+              `).join('')}
+            </div>
+          `;
+          container.appendChild(qDiv);
+        });
       } catch (err) {
-        renderQuiz([
-          {
-            q: `Exam Question on ${topic}: Which approach is scientifically proven best?`,
-            options: ['Active recall & spaced repetition', 'Passive textbook rereading', 'Cramming the night before', 'Skipping study sessions'],
-            answerIndex: 0
-          }
-        ]);
+        container.innerHTML = '<p style="color: var(--danger); margin-top: 1rem;">⚠️ Failed to generate quiz. Try again!</p>';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Generate Quiz';
       }
     }
 
+    function checkQuizAnswer(btn, chosen, correct) {
+      const parent = btn.parentElement;
+      const opts = parent.querySelectorAll('.quiz-opt');
+      opts.forEach((o, idx) => {
+        o.style.pointerEvents = 'none';
+        if (idx === correct) o.classList.add('correct');
+        else if (idx === chosen) o.classList.add('wrong');
+      });
+    }
+
+    // Essay Builder
     async function runEssay() {
       const promptText = document.getElementById('essayInput').value.trim();
+      const btn = document.getElementById('essayBtn');
       const outBox = document.getElementById('essayOutput');
       const outText = document.getElementById('essayText');
-      const btn = document.getElementById('essayBtn');
       if (!promptText) return;
 
       outBox.style.display = 'block';
       btn.disabled = true;
       btn.textContent = 'Drafting...';
-      outText.textContent = '✍️ Zuno AI is building your professional essay outline and thesis...';
+      outText.textContent = '✍️ Structuring thesis statement, outline, and body paragraphs...';
 
       try {
-        const aiReply = await callAI(
-          `Create a professional essay outline and thesis statement for the prompt: "${promptText}". Include an introduction hook, thesis statement, 3 body paragraph arguments, and a conclusion summary.`
-        );
-        outText.textContent = aiReply || 'No outline generated.';
+        const reply = await callAI(`Write an academic essay outline and thesis statement for: "${promptText}". Include Thesis, 3 Body Paragraph points, and Conclusion.`);
+        outText.textContent = reply;
       } catch (err) {
-        outText.textContent = '⚠️ Could not generate essay outline.';
+        outText.textContent = '⚠️ Error generating essay outline.';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Build Outline';
       }
     }
 
+    // Note Vault
     async function runNotes() {
       const notes = document.getElementById('notesText').value.trim();
       const question = document.getElementById('notesQuestion').value.trim();
+      const btn = document.getElementById('notesBtn');
       const outBox = document.getElementById('notesOutput');
       const outText = document.getElementById('notesResultText');
-      const btn = document.getElementById('notesBtn');
       if (!notes) return;
 
       outBox.style.display = 'block';
       btn.disabled = true;
       btn.textContent = 'Analyzing...';
-      outText.textContent = '📚 Processing your notes...';
+      outText.textContent = '📚 Summarizing notes and extracting key takeaways...';
 
       try {
-        const prompt = question
-          ? `Based on these notes:\n\n${notes}\n\nAnswer this question precisely: ${question}`
-          : `Summarize these notes into clean bullet points of key takeaways:\n\n${notes}`;
-
-        const aiReply = await callAI(prompt);
-        outText.textContent = aiReply || 'No analysis generated.';
+        const reply = await callAI(`Summarize these notes into key bullet points and answer this question if provided ("${question}"):\n\n${notes}`);
+        outText.textContent = reply;
       } catch (err) {
-        outText.textContent = '⚠️ Could not process notes.';
+        outText.textContent = '⚠️ Error analyzing notes.';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Analyze Notes';
       }
     }
 
+    // Pomodoro Timer
     let timerInterval = null;
     let timeLeft = 25 * 60;
+    let isRunning = false;
 
     function updateTimerDisplay() {
       const mins = Math.floor(timeLeft / 60);
       const secs = timeLeft % 60;
-      const display = document.getElementById('timerDisplay');
-      if (display) display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      document.getElementById('timerDisplay').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
     function startTimer() {
-      if (timerInterval) return;
+      if (isRunning) return;
+      isRunning = true;
       timerInterval = setInterval(() => {
         if (timeLeft > 0) {
           timeLeft--;
           updateTimerDisplay();
         } else {
           clearInterval(timerInterval);
-          timerInterval = null;
-          alert('Focus session complete! Take a well-deserved break.');
+          isRunning = false;
+          alert('🎉 Focus session complete! Take a 5-minute break.');
         }
       }, 1000);
     }
 
     function resetTimer() {
       clearInterval(timerInterval);
-      timerInterval = null;
+      isRunning = false;
       timeLeft = 25 * 60;
       updateTimerDisplay();
     }
 
+    // Ambient Audio Generator (Web Audio API synth)
     let audioCtx = null;
-    let noiseNode = null;
+    let activeNodes = [];
 
     function toggleAudio(type) {
       stopAudio();
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const bufferSize = 2 * audioCtx.sampleRate;
-      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const output = noiseBuffer.getChannelData(0);
-
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = Math.random() * 2 - 1;
-      }
-
-      noiseNode = audioCtx.createBufferSource();
-      noiseNode.buffer = noiseBuffer;
-      noiseNode.loop = true;
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = type === 'rain' ? 'lowpass' : 'bandpass';
-      filter.frequency.value = type === 'rain' ? 800 : 1200;
-
-      noiseNode.connect(filter);
-      filter.connect(audioCtx.destination);
-      noiseNode.start(0);
-    }
-
-    function stopAudio() {
-      if (noiseNode) {
-        noiseNode.stop();
-        noiseNode.disconnect();
-        noiseNode = null;
-      }
-      if (audioCtx) {
-        audioCtx.close();
-        audioCtx = null;
-      }
-    }
-
-    let tasks = JSON.parse(localStorage.getItem('zuno_tasks') || '[]');
-    if (tasks.length === 0) {
-      tasks = [
-        { text: 'Review AI flashcards for final exam', date: '2026-11-18', done: false },
-        { text: 'Draft essay outline in Zuno Pro', date: '2026-11-16', done: true }
-      ];
-    }
-
-    function renderTasks() {
-      const list = document.getElementById('plannerList');
-      if (!list) return;
-      list.innerHTML = '';
-      tasks.forEach((t, i) => {
-        const item = document.createElement('div');
-        item.className = `task-item ${t.done ? 'done' : ''}`;
-        item.innerHTML = `
-          <div class="task-left" onclick="toggleTask(${i})">
-            <input type="checkbox" ${t.done ? 'checked' : ''} />
-            <span>${t.text}</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:0.75rem;">
-            ${t.date ? `<span class="task-date">${t.date}</span>` : ''}
-            <button class="del-btn" onclick="deleteTask(${i})">✕</button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-      localStorage.setItem('zuno_tasks', JSON.stringify(tasks));
-    }
-
-    function addTask() {
-      const textInput = document.getElementById('taskInput');
-      const dateInput = document.getElementById('taskDate');
-      if (!textInput) return;
-      const text = textInput.value.trim();
-      const date = dateInput ? dateInput.value : '';
-      if (!text) return;
-      tasks.unshift({ text, date, done: false });
-      textInput.value = '';
-      renderTasks();
-    }
-
-    function toggleTask(i) {
-      tasks[i].done = !tasks[i].done;
-      renderTasks();
-    }
-
-    function deleteTask(i) {
-      tasks.splice(i, 1);
-      renderTasks();
-    }
-
-    renderTasks();
-    updateTimerDisplay();
-  </script>
-
-</body>
-</html>
+      
+      if (type === 'rain') {
+        // Pink noise generator for rain
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0
