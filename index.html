@@ -171,31 +171,21 @@
     }
     .pro-nav-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
 
-    .ai-badge {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: #6ee7b7;
-      padding: 0.35rem 0.75rem;
+    .user-pill {
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid var(--border-hover);
+      color: var(--accent-light);
+      padding: 0.35rem 0.85rem;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
+      transition: background 0.2s;
     }
-    .api-status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
-      animation: pulseDot 2s infinite;
-    }
-
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.85); }
-    }
+    .user-pill:hover { background: rgba(124, 58, 237, 0.25); }
 
     main {
       flex: 1;
@@ -612,6 +602,28 @@
     }
     .theme-circle:hover { transform: scale(1.15); box-shadow: 0 0 14px rgba(255,255,255,0.3); }
 
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-box {
+      background: var(--surface-solid);
+      border: 1px solid var(--border-hover);
+      border-radius: 20px;
+      padding: 2.2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
     #toast {
       position: fixed;
       bottom: 24px;
@@ -639,6 +651,7 @@
       color: var(--muted);
       font-size: 0.88rem;
     }
+    .counter-badge img { height: 22px; opacity: 0.9; }
 
     @media (max-width: 720px) {
       .input-row { flex-direction: column; }
@@ -661,6 +674,12 @@
         <button class="nav-btn" id="nav-planner" onclick="switchView('planner')">Planner & Timer</button>
         <button class="pro-nav-btn" onclick="switchView('pricing')">⭐ Pricing</button>
         <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">⚙️ Settings</button>
+        
+        <!-- Account / Auth Pill -->
+        <div id="authNavContainer">
+          <button class="user-pill" onclick="openAuthModal()">👤 <span id="navUsername">Guest Mode</span></button>
+        </div>
+
         <div class="ai-badge">
           <span class="api-status-dot"></span>
           <span>Pro Active</span>
@@ -954,8 +973,13 @@
         </div>
 
         <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-          <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">Account Status</h3>
-          <p style="color: var(--success); font-weight: 600; font-size: 0.95rem;">✓ Zuno Pro Unlimited Access Enabled</p>
+          <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">Account & Cloud Sync</h3>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">Export or restore your progress (XP, Decks, Tasks) across devices.</p>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="secondary-btn" onclick="exportCloudBackup()">📤 Export Cloud Backup JSON</button>
+            <button class="secondary-btn" onclick="document.getElementById('importFile').click()">📥 Import Backup JSON</button>
+            <input type="file" id="importFile" style="display: none;" onchange="importCloudBackup(event)" accept=".json" />
+          </div>
         </div>
 
         <!-- SECRET VISITOR COUNTER WAY AT THE BOTTOM -->
@@ -987,6 +1011,24 @@
 
   </main>
 
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.25rem; font-weight: 700;">👤 Zuno Account</h3>
+        <button onclick="closeAuthModal()" style="background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Set your student name to personalize your Zuno Pro workspace and sync your XP.</p>
+      <div class="input-row">
+        <input type="text" id="usernameInput" placeholder="Enter your name..." onkeydown="if(event.key==='Enter') saveUserAccount()" />
+      </div>
+      <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+        <button class="action-btn" style="flex: 1;" onclick="saveUserAccount()">Save Profile</button>
+        <button class="secondary-btn" onclick="clearUserAccount()" style="color: var(--danger);">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
   <footer>
@@ -994,9 +1036,87 @@
   </footer>
 
   <script>
-    // Gamification & XP State
+    // Gamification, User Profile & XP State
+    let currentUser = localStorage.getItem('zuno_username') || 'Guest';
     let userXP = parseInt(localStorage.getItem('zuno_xp') || '0', 10);
     let userStreak = parseInt(localStorage.getItem('zuno_streak') || '1', 10);
+
+    function updateNavUser() {
+      document.getElementById('navUsername').textContent = currentUser;
+    }
+    updateNavUser();
+
+    function openAuthModal() {
+      document.getElementById('usernameInput').value = currentUser === 'Guest' ? '' : currentUser;
+      document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').style.display = 'none';
+    }
+
+    function saveUserAccount() {
+      const name = document.getElementById('usernameInput').value.trim();
+      if (!name) return;
+      currentUser = name;
+      localStorage.setItem('zuno_username', currentUser);
+      updateNavUser();
+      closeAuthModal();
+      showToast(`Welcome back, ${currentUser}! 👋`);
+    }
+
+    function clearUserAccount() {
+      localStorage.removeItem('zuno_username');
+      currentUser = 'Guest';
+      updateNavUser();
+      closeAuthModal();
+      showToast('Signed out to Guest Mode');
+    }
+
+    // Cloud Backup Export / Import
+    function exportCloudBackup() {
+      const backupData = {
+        username: currentUser,
+        xp: userXP,
+        streak: userStreak,
+        tasks: JSON.parse(localStorage.getItem('zuno_tasks') || '[]'),
+        savedDecks: JSON.parse(localStorage.getItem('zuno_saved_decks') || '[]'),
+        theme: localStorage.getItem('zuno_theme') || 'default'
+      };
+      const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Zuno_Cloud_Backup_${currentUser}.json`;
+      link.click();
+      showToast('📤 Cloud backup exported!');
+    }
+
+    function importCloudBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.xp !== undefined) localStorage.setItem('zuno_xp', data.xp);
+          if (data.streak !== undefined) localStorage.setItem('zuno_streak', data.streak);
+          if (data.username) {
+            localStorage.setItem('zuno_username', data.username);
+            currentUser = data.username;
+            updateNavUser();
+          }
+          if (data.tasks) localStorage.setItem('zuno_tasks', JSON.stringify(data.tasks));
+          if (data.savedDecks) localStorage.setItem('zuno_saved_decks', JSON.stringify(data.savedDecks));
+          if (data.theme) localStorage.setItem('zuno_theme', data.theme);
+          
+          showToast('📥 Backup restored successfully! Refreshing...');
+          setTimeout(() => location.reload(), 1500);
+        } catch(err) {
+          showToast('⚠️ Invalid backup file format.');
+        }
+      };
+      reader.readAsText(file);
+    }
 
     function addXP(amount) {
       userXP += amount;
