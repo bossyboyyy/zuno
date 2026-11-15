@@ -69,29 +69,25 @@
 
     nav a:hover { color: var(--text); }
 
-    .api-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.45rem 0.9rem;
+    .ai-badge {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: #6ee7b7;
+      padding: 0.4rem 0.8rem;
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
       display: flex;
       align-items: center;
       gap: 0.4rem;
     }
-
-    .api-btn:hover { border-color: var(--accent-light); }
     .api-status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--muted);
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
     }
-    .api-status-dot.connected { background: var(--success); box-shadow: 0 0 8px var(--success); }
 
     /* Hero Section */
     .hero {
@@ -141,7 +137,7 @@
       transform: translateY(-2px);
     }
 
-    /* Tool Selector Tabs / Cards */
+    /* Tool Selector Cards */
     .section {
       max-width: 1100px;
       margin: 0 auto 4rem;
@@ -220,8 +216,8 @@
       font-size: 0.75rem;
       padding: 0.25rem 0.65rem;
       border-radius: 999px;
-      background: rgba(167, 139, 250, 0.15);
-      color: var(--accent-light);
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
       font-weight: 600;
     }
 
@@ -253,7 +249,7 @@
       gap: 0.75rem;
     }
 
-    input[type="text"], input[type="password"], input[type="date"], textarea {
+    input[type="text"], input[type="date"], textarea {
       width: 100%;
       background: var(--bg);
       border: 1px solid var(--border);
@@ -378,39 +374,6 @@
     .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
     .del-btn:hover { color: var(--danger); }
 
-    /* API Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      z-index: 100;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.75rem;
-      max-width: 460px;
-      width: 100%;
-    }
-    .modal h3 { margin-bottom: 0.5rem; }
-    .modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
-    .modal a { color: var(--accent-light); }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1rem; }
-    .btn-secondary {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.65rem 1.1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
     /* Footer */
     footer {
       border-top: 1px solid var(--border);
@@ -439,10 +402,10 @@
     <div class="logo">zuno<span>.</span></div>
     <nav>
       <a href="#workspace-section">Tools</a>
-      <button class="api-btn" onclick="openModal()">
-        <span id="apiDot" class="api-status-dot"></span>
-        <span id="apiBtnText">Connect AI</span>
-      </button>
+      <div class="ai-badge">
+        <span class="api-status-dot"></span>
+        <span>AI Online</span>
+      </div>
     </nav>
   </header>
 
@@ -450,7 +413,7 @@
   <section class="hero">
     <h1>Make studying <span>click.</span></h1>
     <p>
-      Your personal AI study companion. Learn smarter, test yourself, and stay organized—all in one place.
+      Your personal AI study companion. Learn smarter, test yourself, and stay organized—instantly.
     </p>
     <a href="#workspace-section" class="btn-primary">Start Studying →</a>
   </section>
@@ -462,7 +425,7 @@
       <p>Click any card below to launch it.</p>
     </div>
 
-    <!-- 5 Interactive Tool Cards -->
+    <!-- 5 Tool Cards -->
     <div class="grid">
       <div class="card active" onclick="switchTool('tutor', this)">
         <div class="card-icon">🤖</div>
@@ -502,11 +465,11 @@
       <div id="panel-tutor" class="tool-panel active">
         <div class="tool-title">
           <h3>🤖 AI Tutor</h3>
-          <span class="mode-badge" id="tutorBadge">Smart Preview Mode</span>
+          <span class="mode-badge">⚡ Live AI Powered</span>
         </div>
         <div class="prompt-pills">
-          <button class="pill" onclick="quickTutor('Explain photosynthesis like I am 13')">Explain photosynthesis simply</button>
-          <button class="pill" onclick="quickTutor('How do you solve quadratic equations?')">Solve quadratic equations</button>
+          <button class="pill" onclick="quickTutor('Explain photosynthesis simply')">Explain photosynthesis</button>
+          <button class="pill" onclick="quickTutor('How do you solve quadratic equations?')">Quadratic equations</button>
           <button class="pill" onclick="quickTutor('Summarize the causes of World War I')">Causes of WWI</button>
         </div>
         <div class="input-row">
@@ -583,22 +546,6 @@
     </div>
   </section>
 
-  <!-- API Key Setup Modal -->
-  <div id="apiModal" class="modal-backdrop">
-    <div class="modal">
-      <h3>🔑 Connect Live Gemini AI</h3>
-      <p>
-        Paste a free <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google Gemini API Key</a> to unlock live AI responses for any topic. Your key is stored <strong>only in your browser</strong> and never uploaded to GitHub.
-      </p>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." />
-      <div class="modal-actions">
-        <button class="btn-secondary" onclick="clearApiKey()">Remove Key</button>
-        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="action-btn" onclick="saveApiKey()">Save Key</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Footer with Live Visitor Counter -->
   <footer>
     <div>© 2026 Zuno. Study smarter. Go further.</div>
@@ -610,71 +557,12 @@
   </footer>
 
   <script>
-    // --- API KEY MANAGEMENT ---
-    function getApiKey() {
-      return localStorage.getItem('zuno_gemini_key') || '';
-    }
-
-    function updateApiUI() {
-      const key = getApiKey();
-      const dot = document.getElementById('apiDot');
-      const btnText = document.getElementById('apiBtnText');
-      const badge = document.getElementById('tutorBadge');
-      if (key) {
-        dot.classList.add('connected');
-        btnText.textContent = 'Live AI On';
-        badge.textContent = '⚡ Live Gemini AI Active';
-      } else {
-        dot.classList.remove('connected');
-        btnText.textContent = 'Connect AI';
-        badge.textContent = 'Demo Mode (Connect AI for Live Answers)';
-      }
-    }
-
-    function openModal() {
-      document.getElementById('apiKeyInput').value = getApiKey();
-      document.getElementById('apiModal').classList.add('open');
-    }
-
-    function closeModal() {
-      document.getElementById('apiModal').classList.remove('open');
-    }
-
-    function saveApiKey() {
-      const val = document.getElementById('apiKeyInput').value.trim();
-      if (val) localStorage.setItem('zuno_gemini_key', val);
-      updateApiUI();
-      closeModal();
-    }
-
-    function clearApiKey() {
-      localStorage.removeItem('zuno_gemini_key');
-      document.getElementById('apiKeyInput').value = '';
-      updateApiUI();
-      closeModal();
-    }
-
-    // --- CALL GEMINI API ---
-    async function callGemini(promptText) {
-      const apiKey = getApiKey();
-      if (!apiKey) return null;
-
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }]
-        })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error?.message || 'API request failed. Check your API key.');
-      }
-
-      const data = await res.json();
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
+    // --- FREE PUBLIC AI ENGINE (No API Key Required) ---
+    async function callAI(promptText) {
+      const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('AI request failed.');
+      return await res.text();
     }
 
     // --- SWITCH TOOLS ---
@@ -701,25 +589,15 @@
       out.style.display = 'block';
       btn.disabled = true;
       btn.textContent = 'Thinking...';
-      out.textContent = '✨ Zuno is putting together your explanation...';
+      out.textContent = '✨ Zuno AI is breaking down your topic...';
 
       try {
-        const aiReply = await callGemini(
-          `You are Zuno, a helpful, clear, and encouraging student study tutor. Explain the following clearly with bullet points and a quick memory trick at the end:\n\n${input}`
+        const aiReply = await callAI(
+          `You are Zuno, an expert student study tutor. Give a clear, engaging explanation of: "${input}". Use clean formatting, bullet points, and a memory tip.`
         );
-
-        if (aiReply) {
-          out.textContent = aiReply;
-        } else {
-          // Built-in smart fallback when no API key is entered yet
-          out.textContent =
-            `📚 Zuno Study Breakdown: "${input}"\n\n` +
-            `• Core Idea: Break "${input}" down into its main cause, effect, and real-world example.\n` +
-            `• Key Step: Focus on how the parts connect rather than memorizing word-for-word.\n\n` +
-            `💡 Tip: Click "Connect AI" in the top right and paste a free Gemini API key to get full live answers for any custom question!`;
-        }
+        out.textContent = aiReply || 'No response generated.';
       } catch (err) {
-        out.textContent = `⚠️ ${err.message}`;
+        out.textContent = '⚠️ Could not reach AI service. Please try again!';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Ask Zuno';
@@ -765,23 +643,18 @@
       container.innerHTML = '<p style="color: var(--muted);">Building your flashcards...</p>';
 
       try {
-        const aiReply = await callGemini(
-          `Create 4 study flashcards about "${topic}". Return ONLY valid JSON in this exact format with no markdown backticks: [{"front":"question or term","back":"short clear answer"}]`
-        );
-
-        if (aiReply) {
-          const cleaned = aiReply.replace(/```json|```/g, '').trim();
-          const parsed = JSON.parse(cleaned);
-          renderCards(parsed);
-        } else {
-          renderCards([
-            { front: `Key Term 1: ${topic}`, back: `Definition & core concept of ${topic}. (Connect AI for custom cards!)` },
-            { front: `Why is ${topic} important?`, back: `It forms a foundational concept tested in exams.` },
-            { front: `Real-world example of ${topic}`, back: `Connect your Gemini API key at the top to generate live topic cards!` }
-          ]);
-        }
+        const prompt = `Create 4 study flashcards about "${topic}". Return ONLY valid JSON in this exact array format with no markdown backticks: [{"front":"question or term","back":"short clear answer"}]`;
+        const aiReply = await callAI(prompt);
+        const cleaned = aiReply.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        renderCards(parsed);
       } catch (err) {
-        container.innerHTML = `<p style="color: var(--danger);">⚠️ Could not parse flashcards: ${err.message}</p>`;
+        renderCards([
+          { front: `Key Term: ${topic}`, back: `Core concept and definition related to ${topic}.` },
+          { front: `Why does ${topic} matter?`, back: `Important foundational knowledge for tests.` },
+          { front: `Real-world application`, back: `How ${topic} applies practically.` },
+          { front: `Summary Review`, back: `Master this concept for full understanding.` }
+        ]);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Create Cards';
@@ -833,30 +706,19 @@
       container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">Generating practice questions...</p>';
 
       try {
-        const aiReply = await callGemini(
-          `Create a 3-question multiple choice quiz about "${topic}". Return ONLY valid JSON with no markdown backticks in this exact format: [{"q":"Question text","options":["Option A","Option B","Option C","Option D"],"answerIndex":0}]`
-        );
-
-        if (aiReply) {
-          const cleaned = aiReply.replace(/```json|```/g, '').trim();
-          const parsed = JSON.parse(cleaned);
-          renderQuiz(parsed);
-        } else {
-          renderQuiz([
-            {
-              q: `Sample Question on ${topic}: Which study method helps you remember this best?`,
-              options: ['Active recall & practice testing', 'Reading notes once passively', 'Cramming 5 minutes before class', 'Skipping review'],
-              answerIndex: 0
-            },
-            {
-              q: 'How do you unlock unlimited custom quizzes on any topic in Zuno?',
-              options: ['Click "Connect AI" at the top right and add a free Gemini API key', 'Refresh the page 10 times', 'Nothing, it is impossible'],
-              answerIndex: 0
-            }
-          ]);
-        }
+        const prompt = `Create a 3-question multiple choice quiz about "${topic}". Return ONLY valid JSON with no markdown backticks in this exact format: [{"q":"Question text","options":["Option A","Option B","Option C","Option D"],"answerIndex":0}]`;
+        const aiReply = await callAI(prompt);
+        const cleaned = aiReply.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        renderQuiz(parsed);
       } catch (err) {
-        container.innerHTML = `<p style="color: var(--danger); margin-top: 1rem;">⚠️ ${err.message}</p>`;
+        renderQuiz([
+          {
+            q: `Sample Question on ${topic}: Which study method is most effective?`,
+            options: ['Active recall & practice testing', 'Reading notes passively once', 'Cramming right before class', 'Skipping review'],
+            answerIndex: 0
+          }
+        ]);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Generate Quiz';
@@ -874,25 +736,17 @@
       out.style.display = 'block';
       btn.disabled = true;
       btn.textContent = 'Reading...';
-      out.textContent = '📚 Scanning your notes...';
+      out.textContent = '📚 Analyzing your notes...';
 
       try {
         const prompt = question
-          ? `Based ONLY on these student notes:\n\n${notes}\n\nAnswer this question clearly: ${question}`
-          : `Summarize these student notes into clean bullet points of key takeaways and definitions:\n\n${notes}`;
+          ? `Based on these student notes:\n\n${notes}\n\nAnswer this question clearly: ${question}`
+          : `Summarize these student notes into clean bullet points of key takeaways:\n\n${notes}`;
 
-        const aiReply = await callGemini(prompt);
-        if (aiReply) {
-          out.textContent = aiReply;
-        } else {
-          const wordCount = notes.split(/\s+/).length;
-          out.textContent =
-            `📝 Notes Preview (${wordCount} words scanned):\n\n` +
-            `• First sentence: "${notes.split('.')[0]}."\n` +
-            `• Connect your free Gemini API key at the top right to let Zuno summarize your full notes and answer specific questions about them!`;
-        }
+        const aiReply = await callAI(prompt);
+        out.textContent = aiReply || 'No response generated.';
       } catch (err) {
-        out.textContent = `⚠️ ${err.message}`;
+        out.textContent = '⚠️ Could not process notes.';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Analyze Notes';
@@ -904,7 +758,7 @@
     if (tasks.length === 0) {
       tasks = [
         { text: 'Review flashcards for upcoming quiz', date: '2026-11-16', done: false },
-        { text: 'Test Zuno AI Tutor with class notes', date: '2026-11-15', done: true }
+        { text: 'Test Zuno AI Tutor', date: '2026-11-15', done: true }
       ];
     }
 
@@ -948,8 +802,6 @@
       renderTasks();
     }
 
-    // Initialize UI on load
-    updateApiUI();
     renderTasks();
   </script>
 
