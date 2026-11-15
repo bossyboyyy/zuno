@@ -1015,16 +1015,20 @@
   <div id="authModal" class="modal-overlay">
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h3 style="font-size: 1.25rem; font-weight: 700;">👤 Zuno Account</h3>
+        <h3 style="font-size: 1.25rem; font-weight: 700;">👤 Zuno Student Account</h3>
         <button onclick="closeAuthModal()" style="background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer;">✕</button>
       </div>
-      <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Set your student name to personalize your Zuno Pro workspace and sync your XP.</p>
-      <div class="input-row">
-        <input type="text" id="usernameInput" placeholder="Enter your name..." onkeydown="if(event.key==='Enter') saveUserAccount()" />
+      <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Log in or create your student account to sync your XP, decks, and streak.</p>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+        <input type="text" id="authUsernameInput" placeholder="Username (e.g. alex_study)..." />
+        <input type="password" id="authPasswordInput" placeholder="Password..." onkeydown="if(event.key==='Enter') loginUser()" />
       </div>
-      <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-        <button class="action-btn" style="flex: 1;" onclick="saveUserAccount()">Save Profile</button>
-        <button class="secondary-btn" onclick="clearUserAccount()" style="color: var(--danger);">Sign Out</button>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="action-btn" style="flex: 1;" onclick="loginUser()">Log In / Sign Up</button>
+      </div>
+      <div id="loggedInControl" style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; display: none; text-align: center;">
+        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem;">Currently signed in as <strong id="modalActiveUser" style="color: var(--accent-light);"></strong></p>
+        <button class="secondary-btn" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; width: 100%;" onclick="logoutUser()">🚪 Log Out</button>
       </div>
     </div>
   </div>
@@ -1036,18 +1040,33 @@
   </footer>
 
   <script>
-    // Gamification, User Profile & XP State
-    let currentUser = localStorage.getItem('zuno_username') || 'Guest';
+    // User Authentication & Profile State
+    let currentUser = localStorage.getItem('zuno_username') || null;
     let userXP = parseInt(localStorage.getItem('zuno_xp') || '0', 10);
     let userStreak = parseInt(localStorage.getItem('zuno_streak') || '1', 10);
 
     function updateNavUser() {
-      document.getElementById('navUsername').textContent = currentUser;
+      const navUserSpan = document.getElementById('navUsername');
+      if (currentUser) {
+        navUserSpan.textContent = currentUser;
+      } else {
+        navUserSpan.textContent = 'Sign In';
+      }
     }
     updateNavUser();
 
     function openAuthModal() {
-      document.getElementById('usernameInput').value = currentUser === 'Guest' ? '' : currentUser;
+      const activeUserText = document.getElementById('modalActiveUser');
+      const loggedInDiv = document.getElementById('loggedInControl');
+      
+      if (currentUser) {
+        activeUserText.textContent = currentUser;
+        loggedInDiv.style.display = 'block';
+      } else {
+        loggedInDiv.style.display = 'none';
+        document.getElementById('authUsernameInput').value = '';
+        document.getElementById('authPasswordInput').value = '';
+      }
       document.getElementById('authModal').style.display = 'flex';
     }
 
@@ -1055,26 +1074,47 @@
       document.getElementById('authModal').style.display = 'none';
     }
 
-    function saveUserAccount() {
-      const name = document.getElementById('usernameInput').value.trim();
-      if (!name) return;
-      currentUser = name;
+    function loginUser() {
+      const username = document.getElementById('authUsernameInput').value.trim();
+      const password = document.getElementById('authPasswordInput').value.trim();
+
+      if (!username || !password) {
+        showToast('⚠️ Please enter both username and password.');
+        return;
+      }
+
+      currentUser = username;
       localStorage.setItem('zuno_username', currentUser);
+      
+      // Load user-specific data namespace if available
+      const savedUserXP = localStorage.getItem(`zuno_xp_${currentUser}`);
+      if (savedUserXP !== null) {
+        userXP = parseInt(savedUserXP, 10);
+      } else {
+        localStorage.setItem(`zuno_xp_${currentUser}`, userXP);
+      }
+
       updateNavUser();
+      updateStatsUI();
       closeAuthModal();
-      showToast(`Welcome back, ${currentUser}! 👋`);
+      showToast(`Welcome back, ${currentUser}! 🎉`);
     }
 
-    function clearUserAccount() {
+    function logoutUser() {
       localStorage.removeItem('zuno_username');
-      currentUser = 'Guest';
+      currentUser = null;
       updateNavUser();
       closeAuthModal();
-      showToast('Signed out to Guest Mode');
+      showToast('Logged out successfully.');
+      setTimeout(() => location.reload(), 1000);
     }
 
     // Cloud Backup Export / Import
     function exportCloudBackup() {
+      if (!currentUser) {
+        showToast('⚠️ Please sign in to export your account backup.');
+        return;
+      }
       const backupData = {
         username: currentUser,
         xp: userXP,
@@ -1086,7 +1126,7 @@
       const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `Zuno_Cloud_Backup_${currentUser}.json`;
+      link.download = `Zuno_Backup_${currentUser}.json`;
       link.click();
       showToast('📤 Cloud backup exported!');
     }
@@ -1098,7 +1138,11 @@
       reader.onload = function(e) {
         try {
           const data = JSON.parse(e.target.result);
-          if (data.xp !== undefined) localStorage.setItem('zuno_xp', data.xp);
+          if (data.xp !== undefined) {
+            userXP = data.xp;
+            localStorage.setItem('zuno_xp', userXP);
+            if (currentUser) localStorage.setItem(`zuno_xp_${currentUser}`, userXP);
+          }
           if (data.streak !== undefined) localStorage.setItem('zuno_streak', data.streak);
           if (data.username) {
             localStorage.setItem('zuno_username', data.username);
@@ -1121,6 +1165,9 @@
     function addXP(amount) {
       userXP += amount;
       localStorage.setItem('zuno_xp', userXP);
+      if (currentUser) {
+        localStorage.setItem(`zuno_xp_${currentUser}`, userXP);
+      }
       updateStatsUI();
       showToast(`+${amount} Mastery XP Earned! ⚡`);
     }
