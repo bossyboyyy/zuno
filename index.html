@@ -20,7 +20,6 @@
       --danger: #ef4444;
     }
 
-    /* Theme Variations */
     body.theme-cyberpunk {
       --bg: #050508;
       --surface: #100c1c;
@@ -66,7 +65,6 @@
       transition: background 0.3s;
     }
 
-    /* Navigation */
     header {
       max-width: 1250px;
       width: 100%;
@@ -143,7 +141,6 @@
       box-shadow: 0 0 8px var(--success);
     }
 
-    /* Main Container Views */
     main {
       flex: 1;
       max-width: 1050px;
@@ -155,7 +152,6 @@
     .view { display: none; }
     .view.active { display: block; }
 
-    /* Dashboard View */
     .dashboard-hero {
       text-align: center;
       margin-bottom: 2.5rem;
@@ -207,7 +203,6 @@
     .dash-card h3 { font-size: 1.15rem; margin-bottom: 0.4rem; }
     .dash-card p { color: var(--muted); font-size: 0.9rem; }
 
-    /* Tool Workspace Styles */
     .workspace-box {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -280,7 +275,6 @@
       font-size: 0.96rem;
       white-space: pre-line;
       display: none;
-      position: relative;
     }
 
     .output-actions {
@@ -289,7 +283,6 @@
       margin-top: 1rem;
     }
 
-    /* Flashcards */
     .flashcards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -314,7 +307,6 @@
     .flashcard-text { font-size: 1rem; margin: 0.75rem 0; font-weight: 500; }
     .flashcard-hint { font-size: 0.78rem; color: var(--muted); }
 
-    /* Quiz */
     .quiz-item {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -338,7 +330,6 @@
     .quiz-opt.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); color: #6ee7b7; }
     .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: #fca5a5; }
 
-    /* Focus Timer & Ambient Audio */
     .timer-container { text-align: center; padding: 1rem 0; }
     .timer-display { font-size: 4rem; font-weight: 800; letter-spacing: -2px; color: var(--accent-light); margin: 1rem 0; }
     .timer-controls { display: flex; justify-content: center; gap: 1rem; }
@@ -356,7 +347,6 @@
       gap: 1rem;
     }
 
-    /* Planner */
     .planner-list { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
     .task-item {
       display: flex;
@@ -373,7 +363,6 @@
     .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
     .del-btn:hover { color: var(--danger); }
 
-    /* Theme Selector Bar */
     .theme-selector {
       display: flex;
       gap: 0.5rem;
@@ -389,7 +378,6 @@
     }
     .theme-circle:hover { transform: scale(1.15); }
 
-    /* Footer */
     footer {
       border-top: 1px solid var(--border);
       padding: 2rem 1.5rem;
@@ -411,7 +399,6 @@
 </head>
 <body>
 
-  <!-- Navigation Bar -->
   <header>
     <div class="logo" onclick="switchView('dashboard')">zuno<span>.</span>PRO</div>
     <nav>
@@ -430,7 +417,6 @@
     </nav>
   </header>
 
-  <!-- Main Content Area -->
   <main>
 
     <!-- 1. DASHBOARD VIEW -->
@@ -443,7 +429,7 @@
       <div class="stats-bar">
         <div class="stat-card">
           <h4>Study Streak</h4>
-          <div class="val" id="statStreak">🔥 5 Day Streak</div>
+          <div class="val">🔥 5 Day Streak</div>
         </div>
         <div class="stat-card">
           <h4>Mastery XP</h4>
@@ -497,4 +483,560 @@
           <span style="color: var(--muted); font-size: 0.85rem;">Unlimited Pro Generation</span>
         </div>
         <div class="prompt-pills">
-          <button class="pill" onclick="quickTutor('Explain cellular respiration simply')">Cell
+          <button class="pill" onclick="quickTutor('Explain cellular respiration simply')">Cellular Respiration</button>
+          <button class="pill" onclick="quickTutor('How do supply and demand work?')">Supply & Demand</button>
+          <button class="pill" onclick="quickTutor('Explain the theory of relativity for beginners')">Relativity</button>
+        </div>
+        <div class="input-row">
+          <input type="text" id="tutorInput" placeholder="Ask any question or enter a study topic..." />
+          <button class="action-btn" id="tutorBtn" onclick="runTutor()">Ask Zuno</button>
+        </div>
+        <div id="tutorOutput" class="output-box">
+          <div id="tutorText"></div>
+          <div class="output-actions">
+            <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border); font-size: 0.85rem; padding: 0.5rem 1rem;" onclick="speakText('tutorText')">🔊 Read Aloud</button>
+            <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border); font-size: 0.85rem; padding: 0.5rem 1rem;" onclick="downloadTxt('tutorText', 'Zuno_Tutor_Notes.txt')">📥 Export TXT</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. FLASHCARDS VIEW -->
+    <div id="view-flashcards" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>🗂️ Flashcard Generator</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Click any card to flip</span>
+        </div>
+        <div class="prompt-pills">
+          <button class="pill" onclick="quickCards('World History key events')">World History</button>
+          <button class="pill" onclick="quickCards('Organic chemistry functional groups')">Chemistry</button>
+          <button class="pill" onclick="quickCards('AP Government vocabulary')">AP Government</button>
+        </div>
+        <div class="input-row">
+          <input type="text" id="cardsInput" placeholder="Enter topic (e.g., Quantum physics, US Presidents)..." />
+          <button class="action-btn" id="cardsBtn" onclick="runFlashcards()">Create Cards</button>
+        </div>
+        <div id="cardsContainer" class="flashcards-grid"></div>
+      </div>
+    </div>
+
+    <!-- 4. QUIZ ARENA VIEW -->
+    <div id="view-quiz" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>📝 Practice Quiz Arena</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Instant grading & score tracking</span>
+        </div>
+        <div class="prompt-pills">
+          <button class="pill" onclick="quickQuiz('World War II History')">World War II</button>
+          <button class="pill" onclick="quickQuiz('Microeconomics basics')">Microeconomics</button>
+          <button class="pill" onclick="quickQuiz('Human Genetics')">Human Genetics</button>
+        </div>
+        <div class="input-row">
+          <input type="text" id="quizInput" placeholder="What topic do you want to be quizzed on?" />
+          <button class="action-btn" id="quizBtn" onclick="runQuiz()">Generate Quiz</button>
+        </div>
+        <div id="quizContainer"></div>
+      </div>
+    </div>
+
+    <!-- 5. ESSAY BUILDER VIEW -->
+    <div id="view-essay" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>✍️ AI Essay & Outline Builder</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Thesis, Outline & Body Paragraphs</span>
+        </div>
+        <div class="input-row">
+          <input type="text" id="essayInput" placeholder="Enter essay prompt or topic (e.g., The impact of AI on education)..." />
+          <button class="action-btn" id="essayBtn" onclick="runEssay()">Build Outline</button>
+        </div>
+        <div id="essayOutput" class="output-box">
+          <div id="essayText"></div>
+          <div class="output-actions">
+            <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border); font-size: 0.85rem; padding: 0.5rem 1rem;" onclick="downloadTxt('essayText', 'Zuno_Essay_Outline.txt')">📥 Export Outline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. NOTE VAULT VIEW -->
+    <div id="view-notes" class="view">
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>📚 Note Vault & Summary</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Instant AI Summarization</span>
+        </div>
+        <textarea id="notesText" placeholder="Paste your lengthy class notes or article here..."></textarea>
+        <div class="input-row">
+          <input type="text" id="notesQuestion" placeholder="Ask a specific question about your notes (optional)..." />
+          <button class="action-btn" id="notesBtn" onclick="runNotes()">Analyze Notes</button>
+        </div>
+        <div id="notesOutput" class="output-box">
+          <div id="notesResultText"></div>
+          <div class="output-actions">
+            <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border); font-size: 0.85rem; padding: 0.5rem 1rem;" onclick="downloadTxt('notesResultText', 'Zuno_Notes_Summary.txt')">📥 Export Summary</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PLANNER & TIMER VIEW -->
+    <div id="view-planner" class="view">
+      <div class="workspace-box" style="margin-bottom: 2rem;">
+        <div class="workspace-header">
+          <h2>⏱️ Pomodoro Focus Timer & Lo-Fi</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">25m Focus / 5m Break</span>
+        </div>
+        <div class="timer-container">
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="timer-controls">
+            <button class="action-btn" onclick="startTimer()">Start Focus</button>
+            <button class="action-btn" style="background: var(--surface); border: 1px solid var(--border);" onclick="resetTimer()">Reset</button>
+          </div>
+        </div>
+
+        <div class="audio-player-box">
+          <div>
+            <strong>🎵 Ambient Focus Generator</strong>
+            <p style="color: var(--muted); font-size: 0.85rem;">Play soothing background study frequencies.</p>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="pill" onclick="toggleAudio('rain')">🌧️ Rain</button>
+            <button class="pill" onclick="toggleAudio('cafe')">☕ Coffee Shop</button>
+            <button class="pill" onclick="stopAudio()">⏹️ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="workspace-box">
+        <div class="workspace-header">
+          <h2>📅 Study Planner & Deadlines</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Auto-saved</span>
+        </div>
+        <div class="input-row">
+          <input type="text" id="taskInput" placeholder="Add assignment, test, or study goal..." />
+          <input type="date" id="taskDate" style="max-width: 170px;" />
+          <button class="action-btn" onclick="addTask()">Add Task</button>
+        </div>
+        <div id="plannerList" class="planner-list"></div>
+      </div>
+    </div>
+
+    <!-- 8. SETTINGS & THEMES VIEW -->
+    <div id="view-settings" class="view">
+      <div class="workspace-box" style="max-width: 600px; margin: 0 auto;">
+        <div class="workspace-header">
+          <h2>⚙️ Zuno Pro Settings</h2>
+          <span style="color: var(--muted); font-size: 0.85rem;">Customization</span>
+        </div>
+        <p style="color: var(--muted); margin-bottom: 1rem;">Choose your app theme style:</p>
+        <div class="theme-selector">
+          <div class="theme-circle" style="background: #7c3aed;" onclick="setTheme('default')" title="Default Midnight"></div>
+          <div class="theme-circle" style="background: #d946ef;" onclick="setTheme('cyberpunk')" title="Cyberpunk Neon"></div>
+          <div class="theme-circle" style="background: #059669;" onclick="setTheme('forest')" title="Emerald Forest"></div>
+          <div class="theme-circle" style="background: #ea580c;" onclick="setTheme('sunset')" title="Sunset Orange"></div>
+        </div>
+        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Account Status</h3>
+          <p style="color: var(--success); font-weight: 600;">✓ Zuno Pro Unlimited Lifetime Access Enabled</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div>© 2026 Zuno Pro. Study smarter. Go further.</div>
+    <div class="counter-badge">
+      <a href="https://librecounter.org/bossyboyyy.github.io/show" target="_blank" rel="noopener">
+        <img src="https://librecounter.org/counter.svg" referrerpolicy="unsafe-url" alt="Visitor counter" />
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    function switchView(viewName) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+      const targetView = document.getElementById(`view-${viewName}`);
+      if (targetView) targetView.classList.add('active');
+
+      const navBtn = document.getElementById(`nav-${viewName}`);
+      if (navBtn) navBtn.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setTheme(theme) {
+      document.body.className = '';
+      if (theme !== 'default') {
+        document.body.classList.add(`theme-${theme}`);
+        localStorage.setItem('zuno_theme', theme);
+      } else {
+        localStorage.removeItem('zuno_theme');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('zuno_theme');
+    if (savedTheme) setTheme(savedTheme);
+
+    async function callAI(promptText) {
+      const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('AI request failed.');
+      return await res.text();
+    }
+
+    function downloadTxt(elementId, filename) {
+      const text = document.getElementById(elementId).innerText;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    function speakText(elementId) {
+      const text = document.getElementById(elementId).innerText;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert('Text-to-speech is not supported on your browser.');
+      }
+    }
+
+    function quickTutor(q) {
+      document.getElementById('tutorInput').value = q;
+      runTutor();
+    }
+
+    async function runTutor() {
+      const input = document.getElementById('tutorInput').value.trim();
+      const outBox = document.getElementById('tutorOutput');
+      const outText = document.getElementById('tutorText');
+      const btn = document.getElementById('tutorBtn');
+      if (!input) return;
+
+      outBox.style.display = 'block';
+      btn.disabled = true;
+      btn.textContent = 'Thinking...';
+      outText.textContent = '✨ Zuno AI Pro is generating your comprehensive study guide...';
+
+      try {
+        const aiReply = await callAI(
+          `You are Zuno Pro, an expert student academic tutor. Provide an in-depth, clear explanation of: "${input}". Include key definitions, bullet points, and an easy memory trick.`
+        );
+        outText.textContent = aiReply || 'No response generated.';
+      } catch (err) {
+        outText.textContent = '⚠️ Could not reach AI service. Please try again!';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Ask Zuno';
+      }
+    }
+
+    function quickCards(t) {
+      document.getElementById('cardsInput').value = t;
+      runFlashcards();
+    }
+
+    function renderCards(cards) {
+      const container = document.getElementById('cardsContainer');
+      container.innerHTML = '';
+      cards.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'flashcard';
+        let showingBack = false;
+        div.innerHTML = `
+          <div class="flashcard-label">Card ${i + 1} • Front</div>
+          <div class="flashcard-text">${c.front}</div>
+          <div class="flashcard-hint">Tap to flip ↻</div>
+        `;
+        div.onclick = () => {
+          showingBack = !showingBack;
+          div.classList.toggle('flipped', showingBack);
+          div.querySelector('.flashcard-label').textContent = showingBack ? `Card ${i + 1} • Answer` : `Card ${i + 1} • Front`;
+          div.querySelector('.flashcard-text').textContent = showingBack ? c.back : c.front;
+        };
+        container.appendChild(div);
+      });
+    }
+
+    async function runFlashcards() {
+      const topic = document.getElementById('cardsInput').value.trim();
+      const btn = document.getElementById('cardsBtn');
+      const container = document.getElementById('cardsContainer');
+      if (!topic) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      container.innerHTML = '<p style="color: var(--muted);">Building your professional flashcards...</p>';
+
+      try {
+        const prompt = `Create 4 high-yield study flashcards about "${topic}". Return ONLY valid JSON in this exact array format with no markdown backticks: [{"front":"question or term","back":"short clear answer"}]`;
+        const aiReply = await callAI(prompt);
+        const cleaned = aiReply.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        renderCards(parsed);
+      } catch (err) {
+        renderCards([
+          { front: `Key Term: ${topic}`, back: `Core concept and professional definition.` },
+          { front: `Significance`, back: `Why this matters in examinations.` },
+          { front: `Application`, back: `Practical real-world scenario.` },
+          { front: `Summary Review`, back: `Mastery checkpoint.` }
+        ]);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Cards';
+      }
+    }
+
+    function quickQuiz(t) {
+      document.getElementById('quizInput').value = t;
+      runQuiz();
+    }
+
+    function renderQuiz(questions) {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      questions.forEach((item, idx) => {
+        const box = document.createElement('div');
+        box.className = 'quiz-item';
+        box.innerHTML = `<div class="quiz-q">${idx + 1}. ${item.q}</div><div class="quiz-options"></div>`;
+        const optsDiv = box.querySelector('.quiz-options');
+
+        item.options.forEach((opt, optIdx) => {
+          const btn = document.createElement('button');
+          btn.className = 'quiz-opt';
+          btn.textContent = opt;
+          btn.onclick = () => {
+            optsDiv.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+            if (optIdx === item.answerIndex) {
+              btn.classList.add('correct');
+            } else {
+              btn.classList.add('wrong');
+              optsDiv.children[item.answerIndex]?.classList.add('correct');
+            }
+          };
+          optsDiv.appendChild(btn);
+        });
+        container.appendChild(box);
+      });
+    }
+
+    async function runQuiz() {
+      const topic = document.getElementById('quizInput').value.trim();
+      const btn = document.getElementById('quizBtn');
+      const container = document.getElementById('quizContainer');
+      if (!topic) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Building Quiz...';
+      container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">Generating exam questions...</p>';
+
+      try {
+        const prompt = `Create a 3-question multiple choice quiz about "${topic}". Return ONLY valid JSON with no markdown backticks in this exact format: [{"q":"Question text","options":["Option A","Option B","Option C","Option D"],"answerIndex":0}]`;
+        const aiReply = await callAI(prompt);
+        const cleaned = aiReply.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        renderQuiz(parsed);
+      } catch (err) {
+        renderQuiz([
+          {
+            q: `Exam Question on ${topic}: Which approach is scientifically proven best?`,
+            options: ['Active recall & spaced repetition', 'Passive textbook rereading', 'Cramming the night before', 'Skipping study sessions'],
+            answerIndex: 0
+          }
+        ]);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate Quiz';
+      }
+    }
+
+    async function runEssay() {
+      const promptText = document.getElementById('essayInput').value.trim();
+      const outBox = document.getElementById('essayOutput');
+      const outText = document.getElementById('essayText');
+      const btn = document.getElementById('essayBtn');
+      if (!promptText) return;
+
+      outBox.style.display = 'block';
+      btn.disabled = true;
+      btn.textContent = 'Drafting...';
+      outText.textContent = '✍️ Zuno AI is building your professional essay outline and thesis...';
+
+      try {
+        const aiReply = await callAI(
+          `Create a professional essay outline and thesis statement for the prompt: "${promptText}". Include an introduction hook, thesis statement, 3 body paragraph arguments, and a conclusion summary.`
+        );
+        outText.textContent = aiReply || 'No outline generated.';
+      } catch (err) {
+        outText.textContent = '⚠️ Could not generate essay outline.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Build Outline';
+      }
+    }
+
+    async function runNotes() {
+      const notes = document.getElementById('notesText').value.trim();
+      const question = document.getElementById('notesQuestion').value.trim();
+      const outBox = document.getElementById('notesOutput');
+      const outText = document.getElementById('notesResultText');
+      const btn = document.getElementById('notesBtn');
+      if (!notes) return;
+
+      outBox.style.display = 'block';
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+      outText.textContent = '📚 Processing your notes...';
+
+      try {
+        const prompt = question
+          ? `Based on these notes:\n\n${notes}\n\nAnswer this question precisely: ${question}`
+          : `Summarize these notes into clean bullet points of key takeaways:\n\n${notes}`;
+
+        const aiReply = await callAI(prompt);
+        outText.textContent = aiReply || 'No analysis generated.';
+      } catch (err) {
+        outText.textContent = '⚠️ Could not process notes.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Analyze Notes';
+      }
+    }
+
+    let timerInterval = null;
+    let timeLeft = 25 * 60;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      const display = document.getElementById('timerDisplay');
+      if (display) display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert('Focus session complete! Take a well-deserved break.');
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+    }
+
+    let audioCtx = null;
+    let noiseNode = null;
+
+    function toggleAudio(type) {
+      stopAudio();
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const bufferSize = 2 * audioCtx.sampleRate;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+
+      noiseNode = audioCtx.createBufferSource();
+      noiseNode.buffer = noiseBuffer;
+      noiseNode.loop = true;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = type === 'rain' ? 'lowpass' : 'bandpass';
+      filter.frequency.value = type === 'rain' ? 800 : 1200;
+
+      noiseNode.connect(filter);
+      filter.connect(audioCtx.destination);
+      noiseNode.start(0);
+    }
+
+    function stopAudio() {
+      if (noiseNode) {
+        noiseNode.stop();
+        noiseNode.disconnect();
+        noiseNode = null;
+      }
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+      }
+    }
+
+    let tasks = JSON.parse(localStorage.getItem('zuno_tasks') || '[]');
+    if (tasks.length === 0) {
+      tasks = [
+        { text: 'Review AI flashcards for final exam', date: '2026-11-18', done: false },
+        { text: 'Draft essay outline in Zuno Pro', date: '2026-11-16', done: true }
+      ];
+    }
+
+    function renderTasks() {
+      const list = document.getElementById('plannerList');
+      if (!list) return;
+      list.innerHTML = '';
+      tasks.forEach((t, i) => {
+        const item = document.createElement('div');
+        item.className = `task-item ${t.done ? 'done' : ''}`;
+        item.innerHTML = `
+          <div class="task-left" onclick="toggleTask(${i})">
+            <input type="checkbox" ${t.done ? 'checked' : ''} />
+            <span>${t.text}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            ${t.date ? `<span class="task-date">${t.date}</span>` : ''}
+            <button class="del-btn" onclick="deleteTask(${i})">✕</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+      localStorage.setItem('zuno_tasks', JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const textInput = document.getElementById('taskInput');
+      const dateInput = document.getElementById('taskDate');
+      if (!textInput) return;
+      const text = textInput.value.trim();
+      const date = dateInput ? dateInput.value : '';
+      if (!text) return;
+      tasks.unshift({ text, date, done: false });
+      textInput.value = '';
+      renderTasks();
+    }
+
+    function toggleTask(i) {
+      tasks[i].done = !tasks[i].done;
+      renderTasks();
+    }
+
+    function deleteTask(i) {
+      tasks.splice(i, 1);
+      renderTasks();
+    }
+
+    renderTasks();
+    updateTimerDisplay();
+  </script>
+
+</body>
+</html>
