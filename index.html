@@ -187,6 +187,26 @@
     }
     .user-pill:hover { background: rgba(124, 58, 237, 0.25); }
 
+    .ai-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--success);
+    }
+    .api-status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--success);
+    }
+
     main {
       flex: 1;
       max-width: 1080px;
@@ -682,7 +702,7 @@
 
         <div class="ai-badge">
           <span class="api-status-dot"></span>
-          <span>Pro Active</span>
+          <span>Gemini Pro Active</span>
         </div>
       </nav>
     </header>
@@ -957,7 +977,7 @@
       </div>
     </div>
 
-    <!-- 9. SETTINGS & SECRET COUNTER VIEW -->
+    <!-- 9. SETTINGS & GEMINI API KEY CONFIG -->
     <div id="view-settings" class="view">
       <div class="workspace-box" style="max-width: 600px; margin: 0 auto;">
         <div class="workspace-header">
@@ -970,6 +990,18 @@
           <div class="theme-circle" style="background: #d946ef;" onclick="setTheme('cyberpunk')" title="Cyberpunk Neon"></div>
           <div class="theme-circle" style="background: #059669;" onclick="setTheme('forest')" title="Emerald Forest"></div>
           <div class="theme-circle" style="background: #ea580c;" onclick="setTheme('sunset')" title="Sunset Orange"></div>
+        </div>
+
+        <!-- GEMINI API CONFIG -->
+        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+          <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">⚡ Google Gemini Flash-Lite Engine</h3>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.85rem;">
+            Paste your free API key from <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--accent-light);">Google AI Studio</a> (gives you 500 requests/day). Stored locally in your browser.
+          </p>
+          <div class="input-row">
+            <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
+            <button class="action-btn" onclick="saveGeminiKey()">Save Key</button>
+          </div>
         </div>
 
         <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
@@ -1040,6 +1072,126 @@
   </footer>
 
   <script>
+    // Load saved Gemini Key into settings input on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedKey = localStorage.getItem('zuno_gemini_key');
+      if (savedKey) {
+        document.getElementById('geminiKeyInput').value = savedKey;
+      }
+      if (localStorage.getItem('zuno_admin_unlocked') === 'true') {
+        const lockBox = document.getElementById('secretLockBox');
+        const adminPanel = document.getElementById('secretAdminPanel');
+        if (lockBox && adminPanel) {
+          lockBox.style.display = 'none';
+          adminPanel.style.display = 'block';
+        }
+      }
+      loadSavedDecks();
+      renderTasks();
+    });
+
+    function saveGeminiKey() {
+      const key = document.getElementById('geminiKeyInput').value.trim();
+      if (!key) {
+        localStorage.removeItem('zuno_gemini_key');
+        showToast('Gemini API key cleared.');
+        return;
+      }
+      localStorage.setItem('zuno_gemini_key', key);
+      showToast('⚡ Gemini Flash-Lite key saved!');
+    }
+
+    // High-speed Gemini 3.5 Flash-Lite Engine with fallback
+    async function callAI(promptText) {
+      const geminiKey = localStorage.getItem('zuno_gemini_key');
+
+      if (geminiKey) {
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${encodeURIComponent(geminiKey)}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: { temperature: 0.4 }
+              })
+            }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          }
+        } catch (e) {
+          // Fall through to public endpoint if fetch fails
+        }
+      }
+
+      // Fallback to public endpoint if no personal Gemini key is entered yet or request failed
+      const fallback = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}`);
+      if (!fallback.ok) throw new Error('AI request failed.');
+      return await fallback.text();
+    }
+
+    // Real-time streaming using Gemini 3.5 Flash-Lite SSE with fallback
+    async function streamAI(promptText, targetElementId) {
+      const targetEl = document.getElementById(targetElementId);
+      const geminiKey = localStorage.getItem('zuno_gemini_key');
+
+      if (!geminiKey) {
+        targetEl.textContent = '⏳ Using public fallback (add a free Gemini key in ⚙️ Settings for instant speed)...\n\n';
+        const text = await callAI(promptText);
+        targetEl.textContent = text;
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${encodeURIComponent(geminiKey)}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }],
+              generationConfig: { temperature: 0.5 }
+            })
+          }
+        );
+
+        if (!res.ok || !res.body) throw new Error('Gemini stream failed');
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        targetEl.textContent = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('data: ')) {
+              try {
+                const json = JSON.parse(trimmed.slice(6));
+                const chunkText = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                if (chunkText) targetEl.textContent += chunkText;
+              } catch (e) {
+                // Ignore partial chunks
+              }
+            }
+          }
+        }
+      } catch (err) {
+        const fullText = await callAI(promptText);
+        targetEl.textContent = fullText;
+      }
+    }
+
     // User Authentication & Profile State
     let currentUser = localStorage.getItem('zuno_username') || null;
     let userXP = parseInt(localStorage.getItem('zuno_xp') || '0', 10);
@@ -1086,7 +1238,6 @@
       currentUser = username;
       localStorage.setItem('zuno_username', currentUser);
       
-      // Load user-specific data namespace if available
       const savedUserXP = localStorage.getItem(`zuno_xp_${currentUser}`);
       if (savedUserXP !== null) {
         userXP = parseInt(savedUserXP, 10);
@@ -1109,7 +1260,6 @@
       setTimeout(() => location.reload(), 1000);
     }
 
-    // Cloud Backup Export / Import
     function exportCloudBackup() {
       if (!currentUser) {
         showToast('⚠️ Please sign in to export your account backup.');
@@ -1217,7 +1367,6 @@
     const savedTheme = localStorage.getItem('zuno_theme');
     if (savedTheme) setTheme(savedTheme);
 
-    // Secret Admin Lock Logic
     function checkSecretCode() {
       const code = document.getElementById('secretCodeInput').value.trim();
       const errorMsg = document.getElementById('secretError');
@@ -1240,25 +1389,6 @@
       document.getElementById('secretAdminPanel').style.display = 'none';
       document.getElementById('secretCodeInput').value = '';
       showToast('🔒 Admin Panel Locked.');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('zuno_admin_unlocked') === 'true') {
-        const lockBox = document.getElementById('secretLockBox');
-        const adminPanel = document.getElementById('secretAdminPanel');
-        if (lockBox && adminPanel) {
-          lockBox.style.display = 'none';
-          adminPanel.style.display = 'block';
-        }
-      }
-      loadSavedDecks();
-    });
-
-    async function callAI(promptText) {
-      const url = `https://text.pollinations.ai/${encodeURIComponent(promptText)}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('AI request failed.');
-      return await res.text();
     }
 
     function downloadTxt(elementId, filename) {
@@ -1298,23 +1428,21 @@
     async function runTutor() {
       const input = document.getElementById('tutorInput').value.trim();
       const outBox = document.getElementById('tutorOutput');
-      const outText = document.getElementById('tutorText');
       const btn = document.getElementById('tutorBtn');
       if (!input) return;
 
       outBox.style.display = 'block';
       btn.disabled = true;
-      btn.textContent = 'Thinking...';
-      outText.textContent = '✨ Zuno AI Pro is generating your comprehensive study guide...';
+      btn.textContent = 'Writing...';
 
       try {
-        const aiReply = await callAI(
-          `You are Zuno Pro, an expert student academic tutor. Provide an in-depth, clear explanation of: "${input}". Include key definitions, bullet points, and an easy memory trick.`
+        await streamAI(
+          `You are Zuno Pro, an expert student academic tutor. Provide an in-depth, clear explanation of: "${input}". Include key definitions, bullet points, and an easy memory trick.`,
+          'tutorText'
         );
-        outText.textContent = aiReply || 'No response generated.';
         addXP(25);
       } catch (err) {
-        outText.textContent = '⚠️ Could not reach AI service. Please try again!';
+        document.getElementById('tutorText').textContent = '⚠️ Could not reach AI service. Please try again!';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Ask Zuno';
@@ -1364,13 +1492,13 @@
 
       btn.disabled = true;
       btn.textContent = 'Generating...';
-      container.innerHTML = '<p style="color: var(--muted);">Building your professional flashcards...</p>';
+      container.innerHTML = '<p style="color: var(--muted);">⚡ Building professional flashcards...</p>';
 
       try {
-        const prompt = `Create 4 high-yield study flashcards about "${topic}". Return ONLY valid JSON in this exact array format with no markdown backticks: [{"front":"question or term","back":"short clear answer"}]`;
+        const prompt = `Create 4 high-yield study flashcards about "${topic}". Return ONLY a raw JSON array with no markdown: [{"front":"question or term","back":"short clear answer"}]`;
         const aiReply = await callAI(prompt);
-        const cleaned = aiReply.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
+        const jsonMatch = aiReply.match(/\[[\s\S]*\]/);
+        const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : aiReply);
         renderCards(parsed);
       } catch (err) {
         renderCards([
@@ -1433,13 +1561,13 @@
 
       btn.disabled = true;
       btn.textContent = 'Building...';
-      container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">Generating custom quiz questions...</p>';
+      container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">⚡ Generating custom quiz questions...</p>';
 
       try {
-        const prompt = `Create 3 multiple choice questions about "${topic}". Return ONLY valid JSON in this exact format with no markdown backticks: [{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0}] where correct is the 0-indexed correct option.`;
+        const prompt = `Create 3 multiple choice questions about "${topic}". Return ONLY a raw JSON array with no markdown: [{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0}] where correct is the 0-indexed correct option.`;
         const aiReply = await callAI(prompt);
-        const cleaned = aiReply.replace(/```json|```/g, '').trim();
-        const questions = JSON.parse(cleaned);
+        const jsonMatch = aiReply.match(/\[[\s\S]*\]/);
+        const questions = JSON.parse(jsonMatch ? jsonMatch[0] : aiReply);
 
         quizCorrectCount = 0;
         quizTotalCount = questions.length;
@@ -1498,20 +1626,20 @@
       const promptText = document.getElementById('essayInput').value.trim();
       const btn = document.getElementById('essayBtn');
       const outBox = document.getElementById('essayOutput');
-      const outText = document.getElementById('essayText');
       if (!promptText) return;
 
       outBox.style.display = 'block';
       btn.disabled = true;
       btn.textContent = 'Drafting...';
-      outText.textContent = '✍️ Structuring thesis statement, outline, and body paragraphs...';
 
       try {
-        const reply = await callAI(`Write an academic essay outline and thesis statement for: "${promptText}". Include Thesis, 3 Body Paragraph points, and Conclusion.`);
-        outText.textContent = reply;
+        await streamAI(
+          `Write an academic essay outline and thesis statement for: "${promptText}". Include Thesis, 3 Body Paragraph points, and Conclusion.`,
+          'essayText'
+        );
         addXP(30);
       } catch (err) {
-        outText.textContent = '⚠️ Error generating essay outline.';
+        document.getElementById('essayText').textContent = '⚠️ Error generating essay outline.';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Build Outline';
@@ -1526,21 +1654,21 @@
       const question = document.getElementById('notesQuestion').value.trim();
       const btn = document.getElementById('notesBtn');
       const outBox = document.getElementById('notesOutput');
-      const outText = document.getElementById('notesResultText');
       if (!notes) return;
 
       lastAnalyzedNotes = notes;
       outBox.style.display = 'block';
       btn.disabled = true;
       btn.textContent = 'Analyzing...';
-      outText.textContent = '📚 Summarizing notes and extracting key takeaways...';
 
       try {
-        const reply = await callAI(`Summarize these notes into key bullet points and answer this question if provided ("${question}"):\n\n${notes}`);
-        outText.textContent = reply;
+        const prompt = question
+          ? `Based on these notes, answer "${question}" concisely and list key takeaways:\n\n${notes}`
+          : `Summarize these notes into concise, high-yield bullet points:\n\n${notes}`;
+        await streamAI(prompt, 'notesResultText');
         addXP(20);
       } catch (err) {
-        outText.textContent = '⚠️ Error analyzing notes.';
+        document.getElementById('notesResultText').textContent = '⚠️ Error analyzing notes.';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Analyze Notes';
@@ -1711,6 +1839,7 @@
 
     function renderTasks() {
       const list = document.getElementById('plannerList');
+      if (!list) return;
       list.innerHTML = '';
       if (tasks.length === 0) {
         list.innerHTML = '<p style="color: var(--muted); font-size: 0.9rem;">No upcoming tasks. Add one above!</p>';
@@ -1762,7 +1891,6 @@
       tasks.splice(idx, 1);
       renderTasks();
     }
-
-    renderTasks();
   </script>
 </body>
+</html>
