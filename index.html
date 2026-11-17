@@ -7,7 +7,7 @@
   <style>
     :root {
       --bg: #07090f;
-      --bg-gradient: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.16), transparent 60%);
+      --bg-gradient: radial-gradient(circle at 70% 20%, rgba(124, 58, 237, 0.14), transparent 60%);
       --surface: rgba(20, 24, 36, 0.85);
       --surface-solid: #141824;
       --surface-hover: #1c2233;
@@ -22,11 +22,12 @@
       --success: #10b981;
       --gold: #f59e0b;
       --danger: #ef4444;
+      --sidebar-width: 260px;
     }
 
     body.theme-cyberpunk {
       --bg: #05040a;
-      --bg-gradient: radial-gradient(circle at 50% 0%, rgba(217, 70, 239, 0.2), transparent 60%);
+      --bg-gradient: radial-gradient(circle at 70% 20%, rgba(217, 70, 239, 0.18), transparent 60%);
       --surface: rgba(18, 12, 32, 0.88);
       --surface-solid: #120c20;
       --surface-hover: #1d1433;
@@ -39,7 +40,7 @@
     }
     body.theme-forest {
       --bg: #050d0a;
-      --bg-gradient: radial-gradient(circle at 50% 0%, rgba(5, 150, 105, 0.18), transparent 60%);
+      --bg-gradient: radial-gradient(circle at 70% 20%, rgba(5, 150, 105, 0.16), transparent 60%);
       --surface: rgba(14, 31, 24, 0.88);
       --surface-solid: #0e1f18;
       --surface-hover: #163025;
@@ -52,7 +53,7 @@
     }
     body.theme-sunset {
       --bg: #11080a;
-      --bg-gradient: radial-gradient(circle at 50% 0%, rgba(234, 88, 12, 0.18), transparent 60%);
+      --bg-gradient: radial-gradient(circle at 70% 20%, rgba(234, 88, 12, 0.16), transparent 60%);
       --surface: rgba(34, 20, 24, 0.88);
       --surface-solid: #221418;
       --surface-hover: #331e24;
@@ -84,42 +85,38 @@
       line-height: 1.6;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      transition: background-color 0.35s ease;
+      overflow-x: hidden;
     }
 
-    .header-wrap {
-      position: sticky;
+    /* Sidebar Layout Styling */
+    aside {
+      width: var(--sidebar-width);
+      background: rgba(10, 13, 22, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid var(--border);
+      position: fixed;
       top: 0;
-      z-index: 100;
-      background: rgba(7, 9, 15, 0.78);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    header {
-      max-width: 1260px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1rem 1.5rem;
+      bottom: 0;
+      left: 0;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.3s ease;
     }
 
-    .logo {
-      font-size: 1.55rem;
+    .sidebar-brand {
+      padding: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      letter-spacing: -0.6px;
-      color: var(--text);
+      letter-spacing: -0.5px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.25rem;
+      border-bottom: 1px solid var(--border);
     }
-    .logo span { color: var(--accent-light); }
+    .sidebar-brand span { color: var(--accent-light); }
     .logo-tag {
       font-size: 0.65rem;
       background: var(--accent);
@@ -131,61 +128,93 @@
       font-weight: 700;
     }
 
-    nav {
+    .sidebar-menu {
+      flex: 1;
+      padding: 1.25rem 1rem;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 0.35rem;
-      flex-wrap: wrap;
+      overflow-y: auto;
     }
 
-    .nav-btn {
+    .sidebar-section-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin: 1rem 0 0.4rem 0.75rem;
+      font-weight: 700;
+    }
+
+    .nav-item {
       background: transparent;
       border: 1px solid transparent;
       color: var(--muted);
-      padding: 0.45rem 0.85rem;
-      border-radius: 9px;
-      font-size: 0.86rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
       font-weight: 500;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: left;
       transition: all 0.2s ease;
     }
-    .nav-btn:hover { color: var(--text); background: var(--surface-hover); }
-    .nav-btn.active {
+    .nav-item:hover { color: var(--text); background: var(--surface-hover); }
+    .nav-item.active {
       color: var(--text);
-      background: var(--surface-hover);
+      background: rgba(124, 58, 237, 0.18);
       border-color: var(--border-hover);
       box-shadow: 0 0 15px var(--accent-glow);
+      font-weight: 600;
     }
 
-    .pro-nav-btn {
-      background: linear-gradient(135deg, #fbbf24, #d97706);
-      color: #09090b;
-      border: none;
-      padding: 0.45rem 0.95rem;
-      border-radius: 9px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
-    .pro-nav-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4); }
 
     .user-pill {
       background: rgba(124, 58, 237, 0.15);
       border: 1px solid var(--border-hover);
       color: var(--accent-light);
-      padding: 0.35rem 0.85rem;
+      padding: 0.5rem 0.85rem;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
       transition: background 0.2s;
+      width: 100%;
     }
     .user-pill:hover { background: rgba(124, 58, 237, 0.25); }
+
+    /* Main Content Area Offset */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 2.5rem 2rem 4rem;
+      max-width: calc(100% - var(--sidebar-width));
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .top-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
 
     .ai-badge {
       display: flex;
@@ -207,22 +236,14 @@
       box-shadow: 0 0 8px var(--success);
     }
 
-    main {
-      flex: 1;
-      max-width: 1080px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 4rem;
-    }
-
     .view {
       display: none;
-      animation: fadeSlideIn 0.28s ease forwards;
+      animation: fadeSlideIn 0.25s ease forwards;
     }
     .view.active { display: block; }
 
     @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -244,7 +265,7 @@
       margin-bottom: 0.85rem;
     }
     .dashboard-hero h1 {
-      font-size: clamp(2.3rem, 5vw, 3.6rem);
+      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
       font-weight: 800;
       letter-spacing: -1.2px;
       line-height: 1.15;
@@ -255,11 +276,11 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .dashboard-hero p { color: var(--muted); font-size: 1.08rem; max-width: 540px; margin: 0 auto; }
+    .dashboard-hero p { color: var(--muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
 
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin-bottom: 2.5rem;
     }
@@ -293,7 +314,7 @@
 
     .dash-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.25rem;
     }
     .dash-card {
@@ -344,6 +365,9 @@
       border-radius: 18px;
       padding: 2rem;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
     }
     .workspace-header {
       display: flex;
@@ -452,7 +476,7 @@
 
     .flashcards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 1rem;
       margin-top: 1.5rem;
     }
@@ -570,7 +594,7 @@
 
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
       gap: 1.5rem;
       margin-top: 1.5rem;
     }
@@ -666,382 +690,406 @@
 
     footer {
       border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem;
+      padding: 2rem 0 0;
+      margin-top: auto;
       text-align: center;
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
     }
-    .counter-badge img { height: 22px; opacity: 0.9; }
 
-    @media (max-width: 720px) {
-      .input-row { flex-direction: column; }
-      header { flex-direction: column; align-items: flex-start; }
+    @media (max-width: 900px) {
+      aside { transform: translateX(-100%); }
+      aside.mobile-open { transform: translateX(0); }
+      .main-content { margin-left: 0; max-width: 100%; padding: 1.5rem; }
+      .mobile-menu-toggle { display: block !important; }
     }
+    .mobile-menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <div class="header-wrap">
-    <header>
-      <div class="logo" onclick="switchView('dashboard')">zuno<span>.</span><span class="logo-tag">PRO</span></div>
-      <nav>
-        <button class="nav-btn active" id="nav-dashboard" onclick="switchView('dashboard')">Dashboard</button>
-        <button class="nav-btn" id="nav-tutor" onclick="switchView('tutor')">AI Tutor</button>
-        <button class="nav-btn" id="nav-flashcards" onclick="switchView('flashcards')">Flashcards</button>
-        <button class="nav-btn" id="nav-quiz" onclick="switchView('quiz')">Quiz Arena</button>
-        <button class="nav-btn" id="nav-essay" onclick="switchView('essay')">Essay Builder</button>
-        <button class="nav-btn" id="nav-notes" onclick="switchView('notes')">Note Vault</button>
-        <button class="nav-btn" id="nav-planner" onclick="switchView('planner')">Planner & Timer</button>
-        <button class="pro-nav-btn" onclick="switchView('pricing')">⭐ Pricing</button>
-        <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">⚙️ Settings</button>
-        
-        <!-- Account / Auth Pill -->
-        <div id="authNavContainer">
-          <button class="user-pill" onclick="openAuthModal()">👤 <span id="navUsername">Guest Mode</span></button>
-        </div>
+  <!-- SIDEBAR NAVIGATION -->
+  <aside id="sidebar">
+    <div class="sidebar-brand" onclick="switchView('dashboard')">
+      zuno<span>.</span><span class="logo-tag">PRO</span>
+    </div>
 
-        <div class="ai-badge">
-          <span class="api-status-dot"></span>
-          <span>Gemini Pro Active</span>
-        </div>
-      </nav>
-    </header>
-  </div>
+    <div class="sidebar-menu">
+      <div class="sidebar-section-title">Overview</div>
+      <button class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">🏠 Dashboard</button>
 
-  <main>
+      <div class="sidebar-section-title">AI Study Suite</div>
+      <button class="nav-item" id="nav-tutor" onclick="switchView('tutor')">🤖 AI Study Tutor</button>
+      <button class="nav-item" id="nav-flashcards" onclick="switchView('flashcards')">🗂️ Smart Flashcards</button>
+      <button class="nav-item" id="nav-quiz" onclick="switchView('quiz')">📝 Quiz Arena</button>
+      <button class="nav-item" id="nav-essay" onclick="switchView('essay')">✍️ Essay Builder</button>
+      <button class="nav-item" id="nav-notes" onclick="switchView('notes')">📚 Note Vault</button>
 
-    <!-- 1. DASHBOARD VIEW -->
-    <div id="view-dashboard" class="view active">
-      <div class="dashboard-hero">
-        <div class="hero-eyebrow">⚡ Next-Gen Academic Suite</div>
-        <h1>Make studying <span>effortless.</span></h1>
-        <p>Your complete AI-powered study hub—designed for faster recall, sharper essays, and deep focus.</p>
+      <div class="sidebar-section-title">Productivity</div>
+      <button class="nav-item" id="nav-planner" onclick="switchView('planner')">⏱️ Planner & Timer</button>
+
+      <div class="sidebar-section-title">System</div>
+      <button class="nav-item" id="nav-pricing" onclick="switchView('pricing')">⭐ Pricing & Pro</button>
+      <button class="nav-item" id="nav-settings" onclick="switchView('settings')">⚙️ Settings</button>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="user-pill" onclick="openAuthModal()">👤 <span id="navUsername">Sign In</span></button>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <div class="main-content">
+    <div class="top-header-bar">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        <h3 id="currentHeaderTitle" style="font-size: 1.15rem; font-weight: 700;">Dashboard</h3>
       </div>
-
-      <div class="stats-bar">
-        <div class="stat-card">
-          <h4>Study Streak</h4>
-          <div class="val" id="streakDisplay">🔥 1 Day Streak</div>
-        </div>
-        <div class="stat-card">
-          <h4>Mastery Level & XP</h4>
-          <div class="val" id="xpDisplay">⚡ Lvl 1 • 0 XP</div>
-          <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
-        </div>
-        <div class="stat-card">
-          <h4>Active Plan</h4>
-          <div class="val" style="color: var(--gold);">⭐ Zuno Pro</div>
-        </div>
-      </div>
-
-      <div class="dash-grid">
-        <div class="dash-card" onclick="switchView('tutor')">
-          <div class="icon-wrap">🤖</div>
-          <h3>AI Study Tutor</h3>
-          <p>Get crystal-clear breakdowns, key definitions, and memory tricks for any subject.</p>
-        </div>
-        <div class="dash-card" onclick="switchView('flashcards')">
-          <div class="icon-wrap">🗂️</div>
-          <h3>Smart Flashcards</h3>
-          <p>Generate and save interactive active-recall decks in seconds.</p>
-        </div>
-        <div class="dash-card" onclick="switchView('quiz')">
-          <div class="icon-wrap">📝</div>
-          <h3>Quiz Arena</h3>
-          <p>Challenge yourself with custom AI multiple-choice exams and live scoring.</p>
-        </div>
-        <div class="dash-card" onclick="switchView('essay')">
-          <div class="icon-wrap">✍️</div>
-          <h3>Essay & Outline Builder</h3>
-          <p>Draft strong thesis statements, structured outlines, and arguments fast.</p>
-        </div>
-        <div class="dash-card" onclick="switchView('notes')">
-          <div class="icon-wrap">📚</div>
-          <h3>Note Vault & Summarizer</h3>
-          <p>Summarize class notes and convert them straight into flashcards or quizzes.</p>
-        </div>
-        <div class="dash-card" onclick="switchView('planner')">
-          <div class="icon-wrap">⏱️</div>
-          <h3>Planner & Focus Timer</h3>
-          <p>Lock in with Pomodoro focus blocks, ambient audio, and deadline tracking.</p>
-        </div>
+      <div class="ai-badge">
+        <span class="api-status-dot"></span>
+        <span>Gemini Flash Active</span>
       </div>
     </div>
 
-    <!-- 2. AI TUTOR VIEW -->
-    <div id="view-tutor" class="view">
-      <div class="workspace-box">
-        <div class="workspace-header">
-          <h2>🤖 AI Study Tutor</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">+25 XP per study guide</span>
+    <main>
+      <!-- 1. DASHBOARD VIEW -->
+      <div id="view-dashboard" class="view active">
+        <div class="dashboard-hero">
+          <div class="hero-eyebrow">⚡ Next-Gen Academic Suite</div>
+          <h1>Make studying <span>effortless.</span></h1>
+          <p>Your complete AI-powered study hub—designed for faster recall, sharper essays, and deep focus.</p>
         </div>
-        <div class="prompt-pills">
-          <button class="pill" onclick="quickTutor('Explain cellular respiration simply')">Cellular Respiration</button>
-          <button class="pill" onclick="quickTutor('How do supply and demand work?')">Supply & Demand</button>
-          <button class="pill" onclick="quickTutor('Explain the theory of relativity for beginners')">Relativity</button>
-        </div>
-        <div class="input-row">
-          <input type="text" id="tutorInput" placeholder="Ask any question or enter a study topic..." onkeydown="if(event.key==='Enter') runTutor()" />
-          <button class="action-btn" id="tutorBtn" onclick="runTutor()">Ask Zuno</button>
-        </div>
-        <div id="tutorOutput" class="output-box">
-          <div id="tutorText"></div>
-          <div class="output-actions">
-            <button class="secondary-btn" onclick="speakText('tutorText')">🔊 Read Aloud</button>
-            <button class="secondary-btn" onclick="copyText('tutorText')">📋 Copy</button>
-            <button class="secondary-btn" onclick="downloadTxt('tutorText', 'Zuno_Tutor_Notes.txt')">📥 Export TXT</button>
+
+        <div class="stats-bar">
+          <div class="stat-card">
+            <h4>Study Streak</h4>
+            <div class="val" id="streakDisplay">🔥 1 Day Streak</div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. FLASHCARDS VIEW -->
-    <div id="view-flashcards" class="view">
-      <div class="workspace-box">
-        <div class="workspace-header">
-          <h2>🗂️ Smart Flashcards</h2>
-          <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <button class="secondary-btn" id="saveDeckBtn" style="display: none;" onclick="saveCurrentDeck()">💾 Save Deck</button>
-            <span style="color: var(--muted); font-size: 0.85rem;">Click any card to flip</span>
+          <div class="stat-card">
+            <h4>Mastery Level & XP</h4>
+            <div class="val" id="xpDisplay">⚡ Lvl 1 • 0 XP</div>
+            <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBarFill"></div></div>
           </div>
-        </div>
-        <div class="prompt-pills">
-          <button class="pill" onclick="quickCards('World History key events')">World History</button>
-          <button class="pill" onclick="quickCards('Organic chemistry functional groups')">Chemistry</button>
-          <button class="pill" onclick="quickCards('AP Government vocabulary')">AP Government</button>
-        </div>
-        <div class="input-row">
-          <input type="text" id="cardsInput" placeholder="Enter topic (e.g., Quantum physics, US Presidents)..." onkeydown="if(event.key==='Enter') runFlashcards()" />
-          <button class="action-btn" id="cardsBtn" onclick="runFlashcards()">Create Cards</button>
-        </div>
-        <div id="cardsContainer" class="flashcards-grid"></div>
-
-        <div class="saved-decks-bar" id="savedDecksSection" style="display: none;">
-          <h4 style="font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.65rem;">📚 Saved Study Decks</h4>
-          <div class="prompt-pills" id="savedDecksList"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. QUIZ ARENA VIEW -->
-    <div id="view-quiz" class="view">
-      <div class="workspace-box">
-        <div class="workspace-header">
-          <h2>📝 Practice Quiz Arena</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">+20 XP per correct answer</span>
-        </div>
-        <div class="prompt-pills">
-          <button class="pill" onclick="quickQuiz('World War II History')">World War II</button>
-          <button class="pill" onclick="quickQuiz('Microeconomics basics')">Microeconomics</button>
-          <button class="pill" onclick="quickQuiz('Human Genetics')">Human Genetics</button>
-        </div>
-        <div class="input-row">
-          <input type="text" id="quizInput" placeholder="What topic do you want to be quizzed on?" onkeydown="if(event.key==='Enter') runQuiz()" />
-          <button class="action-btn" id="quizBtn" onclick="runQuiz()">Generate Quiz</button>
-        </div>
-        <div id="quizScoreboard" class="quiz-scoreboard" style="display: none;">
-          <span id="quizScoreText">Score: 0 / 0</span>
-          <span id="quizStatusText" style="color: var(--accent-light);">Select answers below</span>
-        </div>
-        <div id="quizContainer"></div>
-      </div>
-    </div>
-
-    <!-- 5. ESSAY BUILDER VIEW -->
-    <div id="view-essay" class="view">
-      <div class="workspace-box">
-        <div class="workspace-header">
-          <h2>✍️ AI Essay & Outline Builder</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">Thesis, Outline & Body Paragraphs</span>
-        </div>
-        <div class="input-row">
-          <input type="text" id="essayInput" placeholder="Enter essay prompt or topic (e.g., The impact of AI on education)..." onkeydown="if(event.key==='Enter') runEssay()" />
-          <button class="action-btn" id="essayBtn" onclick="runEssay()">Build Outline</button>
-        </div>
-        <div id="essayOutput" class="output-box">
-          <div id="essayText"></div>
-          <div class="output-actions">
-            <button class="secondary-btn" onclick="copyText('essayText')">📋 Copy</button>
-            <button class="secondary-btn" onclick="downloadTxt('essayText', 'Zuno_Essay_Outline.txt')">📥 Export Outline</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. NOTE VAULT VIEW -->
-    <div id="view-notes" class="view">
-      <div class="workspace-box">
-        <div class="workspace-header">
-          <h2>📚 Note Vault & Summary</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">Summarize & Convert to Study Tools</span>
-        </div>
-        <textarea id="notesText" placeholder="Paste your lengthy class notes or article here..."></textarea>
-        <div class="input-row">
-          <input type="text" id="notesQuestion" placeholder="Ask a specific question about your notes (optional)..." />
-          <button class="action-btn" id="notesBtn" onclick="runNotes()">Analyze Notes</button>
-        </div>
-        <div id="notesOutput" class="output-box">
-          <div id="notesResultText"></div>
-          <div class="output-actions">
-            <button class="secondary-btn" onclick="notesToFlashcards()">🗂️ Turn into Flashcards</button>
-            <button class="secondary-btn" onclick="notesToQuiz()">📝 Quiz Me on Notes</button>
-            <button class="secondary-btn" onclick="downloadTxt('notesResultText', 'Zuno_Notes_Summary.txt')">📥 Export Summary</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 7. PLANNER & TIMER VIEW -->
-    <div id="view-planner" class="view">
-      <div class="workspace-box" style="margin-bottom: 2rem;">
-        <div class="workspace-header">
-          <h2>⏱️ Pomodoro Focus Timer & Lo-Fi</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">+50 XP per completed focus session</span>
-        </div>
-        <div class="timer-container">
-          <div class="timer-modes">
-            <button class="pill active-pill" id="mode-focus" onclick="setTimerMode(25, 'focus')">25m Focus</button>
-            <button class="pill" id="mode-short" onclick="setTimerMode(5, 'short')">5m Short Break</button>
-            <button class="pill" id="mode-long" onclick="setTimerMode(15, 'long')">15m Long Break</button>
-          </div>
-          <div class="timer-display" id="timerDisplay">25:00</div>
-          <div class="timer-controls">
-            <button class="action-btn" id="timerStartBtn" onclick="toggleTimer()">Start Focus</button>
-            <button class="secondary-btn" style="padding: 0.88rem 1.35rem;" onclick="resetTimer()">Reset</button>
+          <div class="stat-card">
+            <h4>Active Plan</h4>
+            <div class="val" style="color: var(--gold);">⭐ Zuno Pro</div>
           </div>
         </div>
 
-        <div class="audio-player-box">
-          <div>
-            <strong>🎵 Ambient Focus Generator</strong>
-            <p style="color: var(--muted); font-size: 0.85rem;">Play soothing background study frequencies.</p>
+        <div class="dash-grid">
+          <div class="dash-card" onclick="switchView('tutor')">
+            <div class="icon-wrap">🤖</div>
+            <h3>AI Study Tutor</h3>
+            <p>Get crystal-clear breakdowns, key definitions, and memory tricks for any subject.</p>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
-            <button class="pill" id="audio-rain" onclick="toggleAudio('rain')">🌧️ Rain</button>
-            <button class="pill" id="audio-cafe" onclick="toggleAudio('cafe')">☕ Coffee Shop</button>
-            <button class="pill" onclick="stopAudio()">⏹️ Stop</button>
-            <input type="range" id="audioVolume" min="0.01" max="0.2" step="0.01" value="0.06" style="width: 85px; padding: 0;" onchange="updateVolume(this.value)" title="Volume" />
+          <div class="dash-card" onclick="switchView('flashcards')">
+            <div class="icon-wrap">🗂️</div>
+            <h3>Smart Flashcards</h3>
+            <p>Generate and save interactive active-recall decks in seconds.</p>
+          </div>
+          <div class="dash-card" onclick="switchView('quiz')">
+            <div class="icon-wrap">📝</div>
+            <h3>Quiz Arena</h3>
+            <p>Challenge yourself with custom AI multiple-choice exams and live scoring.</p>
+          </div>
+          <div class="dash-card" onclick="switchView('essay')">
+            <div class="icon-wrap">✍️</div>
+            <h3>Essay & Outline Builder</h3>
+            <p>Draft strong thesis statements, structured outlines, and arguments fast.</p>
+          </div>
+          <div class="dash-card" onclick="switchView('notes')">
+            <div class="icon-wrap">📚</div>
+            <h3>Note Vault & Summarizer</h3>
+            <p>Summarize class notes and convert them straight into flashcards or quizzes.</p>
+          </div>
+          <div class="dash-card" onclick="switchView('planner')">
+            <div class="icon-wrap">⏱️</div>
+            <h3>Planner & Focus Timer</h3>
+            <p>Lock in with Pomodoro focus blocks, ambient audio, and deadline tracking.</p>
           </div>
         </div>
       </div>
 
-      <div class="workspace-box">
-        <div class="workspace-header">
-          <h2>📅 Study Planner & Deadlines</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">Auto-saved • +15 XP per task</span>
-        </div>
-        <div class="input-row">
-          <input type="text" id="taskInput" placeholder="Add assignment, test, or study goal..." onkeydown="if(event.key==='Enter') addTask()" />
-          <input type="date" id="taskDate" style="max-width: 170px;" />
-          <button class="action-btn" onclick="addTask()">Add Task</button>
-        </div>
-        <div id="plannerList" class="planner-list"></div>
-      </div>
-    </div>
-
-    <!-- 8. PRICING VIEW -->
-    <div id="view-pricing" class="view">
-      <div class="dashboard-hero" style="margin-bottom: 2rem;">
-        <h1>Unlock <span>Zuno Pro.</span></h1>
-        <p>Choose your plan and elevate your academic performance.</p>
-      </div>
-
-      <div class="pricing-grid">
-        <div class="price-card">
-          <div>
-            <h3>Free Student</h3>
-            <div class="price">$0 <span>/ forever</span></div>
-            <ul class="features-list">
-              <li>Standard AI Tutor explanations</li>
-              <li>Basic flashcard generator</li>
-              <li>Standard practice quizzes</li>
-              <li>Pomodoro focus timer & planner</li>
-            </ul>
+      <!-- 2. AI TUTOR VIEW -->
+      <div id="view-tutor" class="view">
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>🤖 AI Study Tutor</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">+25 XP per study guide</span>
           </div>
-          <button class="secondary-btn" style="width: 100%; padding: 0.9rem; margin-top: 1.5rem;" onclick="switchView('dashboard')">Included</button>
-        </div>
-
-        <div class="price-card featured">
-          <div>
-            <h3>Zuno Pro</h3>
-            <div class="price">$7.99 <span>/ month</span></div>
-            <ul class="features-list">
-              <li>Unlimited high-speed AI generations</li>
-              <li>Essay & Outline Builder tool</li>
-              <li>One-click Note Vault to Flashcards & Quiz</li>
-              <li>Ambient focus audio generator & custom themes</li>
-            </ul>
+          <div class="prompt-pills">
+            <button class="pill" onclick="quickTutor('Explain cellular respiration simply')">Cellular Respiration</button>
+            <button class="pill" onclick="quickTutor('How do supply and demand work?')">Supply & Demand</button>
+            <button class="pill" onclick="quickTutor('Explain the theory of relativity for beginners')">Relativity</button>
           </div>
-          <button class="action-btn" style="background: var(--gold); color: #000; width: 100%; margin-top: 1.5rem; font-weight: 700;" onclick="showToast('🔒 Zuno Pro Payments are launching soon! You currently have full access.')">Upgrade to Pro</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 9. SETTINGS & GEMINI API KEY CONFIG -->
-    <div id="view-settings" class="view">
-      <div class="workspace-box" style="max-width: 600px; margin: 0 auto;">
-        <div class="workspace-header">
-          <h2>⚙️ Zuno Pro Settings</h2>
-          <span style="color: var(--muted); font-size: 0.85rem;">Customization</span>
-        </div>
-        <p style="color: var(--muted); margin-bottom: 0.75rem;">Choose your app theme style:</p>
-        <div class="theme-selector">
-          <div class="theme-circle" style="background: #7c3aed;" onclick="setTheme('default')" title="Default Midnight"></div>
-          <div class="theme-circle" style="background: #d946ef;" onclick="setTheme('cyberpunk')" title="Cyberpunk Neon"></div>
-          <div class="theme-circle" style="background: #059669;" onclick="setTheme('forest')" title="Emerald Forest"></div>
-          <div class="theme-circle" style="background: #ea580c;" onclick="setTheme('sunset')" title="Sunset Orange"></div>
-        </div>
-
-        <!-- GEMINI API CONFIG -->
-        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-          <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">⚡ Google Gemini Flash-Lite Engine</h3>
-          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.85rem;">
-            Paste your free API key from <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--accent-light);">Google AI Studio</a> (gives you 500 requests/day). Stored locally in your browser.
-          </p>
           <div class="input-row">
-            <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
-            <button class="action-btn" onclick="saveGeminiKey()">Save Key</button>
+            <input type="text" id="tutorInput" placeholder="Ask any question or enter a study topic..." onkeydown="if(event.key==='Enter') runTutor()" />
+            <button class="action-btn" id="tutorBtn" onclick="runTutor()">Ask Zuno</button>
           </div>
-        </div>
-
-        <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-          <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">Account & Cloud Sync</h3>
-          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">Export or restore your progress (XP, Decks, Tasks) across devices.</p>
-          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-            <button class="secondary-btn" onclick="exportCloudBackup()">📤 Export Cloud Backup JSON</button>
-            <button class="secondary-btn" onclick="document.getElementById('importFile').click()">📥 Import Backup JSON</button>
-            <input type="file" id="importFile" style="display: none;" onchange="importCloudBackup(event)" accept=".json" />
-          </div>
-        </div>
-
-        <!-- SECRET VISITOR COUNTER WAY AT THE BOTTOM -->
-        <div style="margin-top: 3.5rem; border-top: 1px dashed var(--border); padding-top: 2rem;">
-          <h3 style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.65rem;">🔒 Admin Secret Access</h3>
-          <div id="secretLockBox">
-            <div class="input-row" style="margin-bottom: 0.5rem;">
-              <input type="password" id="secretCodeInput" placeholder="Enter secret code..." onkeydown="if(event.key==='Enter') checkSecretCode()" />
-              <button class="action-btn" onclick="checkSecretCode()">Unlock</button>
+          <div id="tutorOutput" class="output-box">
+            <div id="tutorText"></div>
+            <div class="output-actions">
+              <button class="secondary-btn" onclick="speakText('tutorText')">🔊 Read Aloud</button>
+              <button class="secondary-btn" onclick="copyText('tutorText')">📋 Copy</button>
+              <button class="secondary-btn" onclick="downloadTxt('tutorText', 'Zuno_Tutor_Notes.txt')">📥 Export TXT</button>
             </div>
-            <p id="secretError" style="color: var(--danger); font-size: 0.82rem; display: none; margin-top: 0.35rem;">Incorrect code.</p>
-          </div>
-
-          <div id="secretAdminPanel" style="display: none; margin-top: 1rem; background: rgba(7, 9, 15, 0.75); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-hover);">
-            <h4 style="color: var(--accent-light); margin-bottom: 0.75rem; font-size: 0.98rem;">📊 Private Site Analytics & Counter</h4>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
-              <span style="color: var(--muted); font-size: 0.9rem;">Live Visitor Counter:</span>
-              <div class="counter-badge">
-                <a href="https://librecounter.org/bossyboyyy.github.io/show" target="_blank" rel="noopener">
-                  <img src="https://librecounter.org/counter.svg" referrerpolicy="unsafe-url" alt="Visitor counter" />
-                </a>
-              </div>
-            </div>
-            <button class="secondary-btn" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; width: 100%; margin-top: 0.5rem;" onclick="lockAdminPanel()">🔒 Lock Again</button>
           </div>
         </div>
       </div>
-    </div>
 
-  </main>
+      <!-- 3. FLASHCARDS VIEW -->
+      <div id="view-flashcards" class="view">
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>🗂️ Smart Flashcards</h2>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="secondary-btn" id="saveDeckBtn" style="display: none;" onclick="saveCurrentDeck()">💾 Save Deck</button>
+              <span style="color: var(--muted); font-size: 0.85rem;">Click any card to flip</span>
+            </div>
+          </div>
+          <div class="prompt-pills">
+            <button class="pill" onclick="quickCards('World History key events')">World History</button>
+            <button class="pill" onclick="quickCards('Organic chemistry functional groups')">Chemistry</button>
+            <button class="pill" onclick="quickCards('AP Government vocabulary')">AP Government</button>
+          </div>
+          <div class="input-row">
+            <input type="text" id="cardsInput" placeholder="Enter topic (e.g., Quantum physics, US Presidents)..." onkeydown="if(event.key==='Enter') runFlashcards()" />
+            <button class="action-btn" id="cardsBtn" onclick="runFlashcards()">Create Cards</button>
+          </div>
+          <div id="cardsContainer" class="flashcards-grid"></div>
+
+          <div class="saved-decks-bar" id="savedDecksSection" style="display: none;">
+            <h4 style="font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.65rem;">📚 Saved Study Decks</h4>
+            <div class="prompt-pills" id="savedDecksList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. QUIZ ARENA VIEW -->
+      <div id="view-quiz" class="view">
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>📝 Practice Quiz Arena</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">+20 XP per correct answer</span>
+          </div>
+          <div class="prompt-pills">
+            <button class="pill" onclick="quickQuiz('World War II History')">World War II</button>
+            <button class="pill" onclick="quickQuiz('Microeconomics basics')">Microeconomics</button>
+            <button class="pill" onclick="quickQuiz('Human Genetics')">Human Genetics</button>
+          </div>
+          <div class="input-row">
+            <input type="text" id="quizInput" placeholder="What topic do you want to be quizzed on?" onkeydown="if(event.key==='Enter') runQuiz()" />
+            <button class="action-btn" id="quizBtn" onclick="runQuiz()">Generate Quiz</button>
+          </div>
+          <div id="quizScoreboard" class="quiz-scoreboard" style="display: none;">
+            <span id="quizScoreText">Score: 0 / 0</span>
+            <span id="quizStatusText" style="color: var(--accent-light);">Select answers below</span>
+          </div>
+          <div id="quizContainer"></div>
+        </div>
+      </div>
+
+      <!-- 5. ESSAY BUILDER VIEW -->
+      <div id="view-essay" class="view">
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>✍️ AI Essay & Outline Builder</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">Thesis, Outline & Body Paragraphs</span>
+          </div>
+          <div class="input-row">
+            <input type="text" id="essayInput" placeholder="Enter essay prompt or topic (e.g., The impact of AI on education)..." onkeydown="if(event.key==='Enter') runEssay()" />
+            <button class="action-btn" id="essayBtn" onclick="runEssay()">Build Outline</button>
+          </div>
+          <div id="essayOutput" class="output-box">
+            <div id="essayText"></div>
+            <div class="output-actions">
+              <button class="secondary-btn" onclick="copyText('essayText')">📋 Copy</button>
+              <button class="secondary-btn" onclick="downloadTxt('essayText', 'Zuno_Essay_Outline.txt')">📥 Export Outline</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. NOTE VAULT VIEW -->
+      <div id="view-notes" class="view">
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>📚 Note Vault & Summary</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">Summarize & Convert to Study Tools</span>
+          </div>
+          <textarea id="notesText" placeholder="Paste your lengthy class notes or article here..."></textarea>
+          <div class="input-row">
+            <input type="text" id="notesQuestion" placeholder="Ask a specific question about your notes (optional)..." />
+            <button class="action-btn" id="notesBtn" onclick="runNotes()">Analyze Notes</button>
+          </div>
+          <div id="notesOutput" class="output-box">
+            <div id="notesResultText"></div>
+            <div class="output-actions">
+              <button class="secondary-btn" onclick="notesToFlashcards()">🗂️ Turn into Flashcards</button>
+              <button class="secondary-btn" onclick="notesToQuiz()">📝 Quiz Me on Notes</button>
+              <button class="secondary-btn" onclick="downloadTxt('notesResultText', 'Zuno_Notes_Summary.txt')">📥 Export Summary</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. PLANNER & TIMER VIEW -->
+      <div id="view-planner" class="view">
+        <div class="workspace-box" style="margin-bottom: 2rem;">
+          <div class="workspace-header">
+            <h2>⏱️ Pomodoro Focus Timer & Lo-Fi</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">+50 XP per completed focus session</span>
+          </div>
+          <div class="timer-container">
+            <div class="timer-modes">
+              <button class="pill active-pill" id="mode-focus" onclick="setTimerMode(25, 'focus')">25m Focus</button>
+              <button class="pill" id="mode-short" onclick="setTimerMode(5, 'short')">5m Short Break</button>
+              <button class="pill" id="mode-long" onclick="setTimerMode(15, 'long')">15m Long Break</button>
+            </div>
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-controls">
+              <button class="action-btn" id="timerStartBtn" onclick="toggleTimer()">Start Focus</button>
+              <button class="secondary-btn" style="padding: 0.88rem 1.35rem;" onclick="resetTimer()">Reset</button>
+            </div>
+          </div>
+
+          <div class="audio-player-box">
+            <div>
+              <strong>🎵 Ambient Focus Generator</strong>
+              <p style="color: var(--muted); font-size: 0.85rem;">Play soothing background study frequencies.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+              <button class="pill" id="audio-rain" onclick="toggleAudio('rain')">🌧️ Rain</button>
+              <button class="pill" id="audio-cafe" onclick="toggleAudio('cafe')">☕ Coffee Shop</button>
+              <button class="pill" onclick="stopAudio()">⏹️ Stop</button>
+              <input type="range" id="audioVolume" min="0.01" max="0.2" step="0.01" value="0.06" style="width: 85px; padding: 0;" onchange="updateVolume(this.value)" title="Volume" />
+            </div>
+          </div>
+        </div>
+
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>📅 Study Planner & Deadlines</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">Auto-saved • +15 XP per task</span>
+          </div>
+          <div class="input-row">
+            <input type="text" id="taskInput" placeholder="Add assignment, test, or study goal..." onkeydown="if(event.key==='Enter') addTask()" />
+            <input type="date" id="taskDate" style="max-width: 170px;" />
+            <button class="action-btn" onclick="addTask()">Add Task</button>
+          </div>
+          <div id="plannerList" class="planner-list"></div>
+        </div>
+      </div>
+
+      <!-- 8. PRICING VIEW -->
+      <div id="view-pricing" class="view">
+        <div class="workspace-box">
+          <div class="dashboard-hero" style="margin-bottom: 2rem;">
+            <h1>Unlock <span>Zuno Pro.</span></h1>
+            <p>Choose your plan and elevate your academic performance.</p>
+          </div>
+
+          <div class="pricing-grid">
+            <div class="price-card">
+              <div>
+                <h3>Free Student</h3>
+                <div class="price">$0 <span>/ forever</span></div>
+                <ul class="features-list">
+                  <li>Standard AI Tutor explanations</li>
+                  <li>Basic flashcard generator</li>
+                  <li>Standard practice quizzes</li>
+                  <li>Pomodoro focus timer & planner</li>
+                </ul>
+              </div>
+              <button class="secondary-btn" style="width: 100%; padding: 0.9rem; margin-top: 1.5rem;" onclick="switchView('dashboard')">Included</button>
+            </div>
+
+            <div class="price-card featured">
+              <div>
+                <h3>Zuno Pro</h3>
+                <div class="price">$7.99 <span>/ month</span></div>
+                <ul class="features-list">
+                  <li>Unlimited high-speed AI generations</li>
+                  <li>Essay & Outline Builder tool</li>
+                  <li>One-click Note Vault to Flashcards & Quiz</li>
+                  <li>Ambient focus audio generator & custom themes</li>
+                </ul>
+              </div>
+              <button class="action-btn" style="background: var(--gold); color: #000; width: 100%; margin-top: 1.5rem; font-weight: 700;" onclick="showToast('🔒 Zuno Pro Payments are launching soon! You currently have full access.')">Upgrade to Pro</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. SETTINGS & GEMINI API KEY CONFIG -->
+      <div id="view-settings" class="view">
+        <div class="workspace-box">
+          <div class="workspace-header">
+            <h2>⚙️ Zuno Pro Settings</h2>
+            <span style="color: var(--muted); font-size: 0.85rem;">Customization</span>
+          </div>
+          <p style="color: var(--muted); margin-bottom: 0.75rem;">Choose your app theme style:</p>
+          <div class="theme-selector">
+            <div class="theme-circle" style="background: #7c3aed;" onclick="setTheme('default')" title="Default Midnight"></div>
+            <div class="theme-circle" style="background: #d946ef;" onclick="setTheme('cyberpunk')" title="Cyberpunk Neon"></div>
+            <div class="theme-circle" style="background: #059669;" onclick="setTheme('forest')" title="Emerald Forest"></div>
+            <div class="theme-circle" style="background: #ea580c;" onclick="setTheme('sunset')" title="Sunset Orange"></div>
+          </div>
+
+          <!-- GEMINI API CONFIG -->
+          <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+            <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">⚡ Google Gemini Flash-Lite Engine</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.85rem;">
+              Paste your free API key from <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--accent-light);">Google AI Studio</a> (gives you 500 requests/day). Stored locally in your browser.
+            </p>
+            <div class="input-row">
+              <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
+              <button class="action-btn" onclick="saveGeminiKey()">Save Key</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+            <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">Account & Cloud Sync</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">Export or restore your progress (XP, Decks, Tasks) across devices.</p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="secondary-btn" onclick="exportCloudBackup()">📤 Export Cloud Backup JSON</button>
+              <button class="secondary-btn" onclick="document.getElementById('importFile').click()">📥 Import Backup JSON</button>
+              <input type="file" id="importFile" style="display: none;" onchange="importCloudBackup(event)" accept=".json" />
+            </div>
+          </div>
+
+          <!-- SECRET VISITOR COUNTER WAY AT THE BOTTOM -->
+          <div style="margin-top: 3.5rem; border-top: 1px dashed var(--border); padding-top: 2rem;">
+            <h3 style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.65rem;">🔒 Admin Secret Access</h3>
+            <div id="secretLockBox">
+              <div class="input-row" style="margin-bottom: 0.5rem;">
+                <input type="password" id="secretCodeInput" placeholder="Enter secret code..." onkeydown="if(event.key==='Enter') checkSecretCode()" />
+                <button class="action-btn" onclick="checkSecretCode()">Unlock</button>
+              </div>
+              <p id="secretError" style="color: var(--danger); font-size: 0.82rem; display: none; margin-top: 0.35rem;">Incorrect code.</p>
+            </div>
+
+            <div id="secretAdminPanel" style="display: none; margin-top: 1rem; background: rgba(7, 9, 15, 0.75); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-hover);">
+              <h4 style="color: var(--accent-light); margin-bottom: 0.75rem; font-size: 0.98rem;">📊 Private Site Analytics & Counter</h4>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                <span style="color: var(--muted); font-size: 0.9rem;">Live Visitor Counter:</span>
+                <div class="counter-badge">
+                  <a href="https://librecounter.org/bossyboyyy.github.io/show" target="_blank" rel="noopener">
+                    <img src="https://librecounter.org/counter.svg" referrerpolicy="unsafe-url" alt="Visitor counter" />
+                  </a>
+                </div>
+              </div>
+              <button class="secondary-btn" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; width: 100%; margin-top: 0.5rem;" onclick="lockAdminPanel()">🔒 Lock Again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div>© 2026 Zuno Pro. Study smarter. Go further.</div>
+    </footer>
+  </div>
 
   <!-- AUTH MODAL -->
   <div id="authModal" class="modal-overlay">
@@ -1067,12 +1115,7 @@
 
   <div id="toast"></div>
 
-  <footer>
-    <div>© 2026 Zuno Pro. Study smarter. Go further.</div>
-  </footer>
-
   <script>
-    // Load saved Gemini Key into settings input on load
     window.addEventListener('DOMContentLoaded', () => {
       const savedKey = localStorage.getItem('zuno_gemini_key');
       if (savedKey) {
@@ -1090,6 +1133,10 @@
       renderTasks();
     });
 
+    function toggleMobileMenu() {
+      document.getElementById('sidebar').classList.toggle('mobile-open');
+    }
+
     function saveGeminiKey() {
       const key = document.getElementById('geminiKeyInput').value.trim();
       if (!key) {
@@ -1101,7 +1148,6 @@
       showToast('⚡ Gemini Flash-Lite key saved!');
     }
 
-    // High-speed Gemini 3.5 Flash-Lite Engine with fallback
     async function callAI(promptText) {
       const geminiKey = localStorage.getItem('zuno_gemini_key');
 
@@ -1122,18 +1168,14 @@
             const data = await res.json();
             return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
           }
-        } catch (e) {
-          // Fall through to public endpoint if fetch fails
-        }
+        } catch (e) {}
       }
 
-      // Fallback to public endpoint if no personal Gemini key is entered yet or request failed
       const fallback = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}`);
       if (!fallback.ok) throw new Error('AI request failed.');
       return await fallback.text();
     }
 
-    // Real-time streaming using Gemini 3.5 Flash-Lite SSE with fallback
     async function streamAI(promptText, targetElementId) {
       const targetEl = document.getElementById(targetElementId);
       const geminiKey = localStorage.getItem('zuno_gemini_key');
@@ -1180,9 +1222,7 @@
                 const json = JSON.parse(trimmed.slice(6));
                 const chunkText = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
                 if (chunkText) targetEl.textContent += chunkText;
-              } catch (e) {
-                // Ignore partial chunks
-              }
+              } catch (e) {}
             }
           }
         }
@@ -1192,7 +1232,6 @@
       }
     }
 
-    // User Authentication & Profile State
     let currentUser = localStorage.getItem('zuno_username') || null;
     let userXP = parseInt(localStorage.getItem('zuno_xp') || '0', 10);
     let userStreak = parseInt(localStorage.getItem('zuno_streak') || '1', 10);
@@ -1340,15 +1379,30 @@
       setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
+    const viewTitles = {
+      dashboard: 'Dashboard',
+      tutor: 'AI Study Tutor',
+      flashcards: 'Smart Flashcards',
+      quiz: 'Quiz Arena',
+      essay: 'Essay & Outline Builder',
+      notes: 'Note Vault & Summary',
+      planner: 'Planner & Focus Timer',
+      pricing: 'Zuno Pro Pricing',
+      settings: 'Settings & Configuration'
+    };
+
     function switchView(viewName) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 
       const targetView = document.getElementById(`view-${viewName}`);
       if (targetView) targetView.classList.add('active');
 
       const navBtn = document.getElementById(`nav-${viewName}`);
       if (navBtn) navBtn.classList.add('active');
+
+      document.getElementById('currentHeaderTitle').textContent = viewTitles[viewName] || 'Dashboard';
+      document.getElementById('sidebar').classList.remove('mobile-open');
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1419,7 +1473,6 @@
       }
     }
 
-    // AI Tutor
     function quickTutor(q) {
       document.getElementById('tutorInput').value = q;
       runTutor();
@@ -1449,7 +1502,6 @@
       }
     }
 
-    // Flashcards & Saved Decks
     let currentCardsData = [];
 
     function quickCards(t) {
@@ -1543,7 +1595,6 @@
       }
     }
 
-    // Quiz Arena
     function quickQuiz(t) {
       document.getElementById('quizInput').value = t;
       runQuiz();
@@ -1621,7 +1672,6 @@
       updateScoreboard();
     }
 
-    // Essay Builder
     async function runEssay() {
       const promptText = document.getElementById('essayInput').value.trim();
       const btn = document.getElementById('essayBtn');
@@ -1646,7 +1696,6 @@
       }
     }
 
-    // Note Vault & One-Click Pipeline
     let lastAnalyzedNotes = '';
 
     async function runNotes() {
@@ -1695,7 +1744,6 @@
       runQuiz(lastAnalyzedNotes);
     }
 
-    // Pomodoro Timer
     let timerInterval = null;
     let timeLeft = 25 * 60;
     let totalTimerSeconds = 25 * 60;
@@ -1751,7 +1799,6 @@
       updateTimerDisplay();
     }
 
-    // Ambient Audio Generator (Web Audio API synth)
     let audioCtx = null;
     let activeNodes = [];
     let masterGain = null;
@@ -1834,7 +1881,6 @@
       }
     }
 
-    // Planner / Tasks
     let tasks = JSON.parse(localStorage.getItem('zuno_tasks') || '[]');
 
     function renderTasks() {
@@ -1894,3 +1940,4 @@
   </script>
 </body>
 </html>
+   
