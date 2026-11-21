@@ -91,7 +91,7 @@
     /* Sidebar Layout Styling */
     aside {
       width: var(--sidebar-width);
-      background: rgba(10, 13, 22, 0.92);
+      background: rgba(10, 13, 22, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-right: 1px solid var(--border);
@@ -182,9 +182,9 @@
       background: rgba(124, 58, 237, 0.15);
       border: 1px solid var(--border-hover);
       color: var(--accent-light);
-      padding: 0.5rem 0.85rem;
+      padding: 0.55rem 0.85rem;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -200,7 +200,7 @@
     .main-content {
       margin-left: var(--sidebar-width);
       flex: 1;
-      padding: 2.5rem 2rem 4rem;
+      padding: 2rem 2rem 4rem;
       max-width: calc(100% - var(--sidebar-width));
       display: flex;
       flex-direction: column;
@@ -214,7 +214,30 @@
       margin-bottom: 2rem;
       padding-bottom: 1rem;
       border-bottom: 1px solid var(--border);
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
+
+    .header-right-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .live-clock-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .live-clock-pill:hover { border-color: var(--border-hover); color: var(--text); }
 
     .ai-badge {
       display: flex;
@@ -227,13 +250,19 @@
       font-size: 0.75rem;
       font-weight: 600;
       color: var(--success);
+      cursor: pointer;
+    }
+    .ai-badge.fallback-mode {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: var(--gold);
     }
     .api-status-dot {
       width: 7px;
       height: 7px;
-      background: var(--success);
+      background: currentColor;
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--success);
+      box-shadow: 0 0 8px currentColor;
     }
 
     .view {
@@ -397,6 +426,9 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
     }
     .pill:hover, .pill.active-pill {
       color: var(--text);
@@ -460,10 +492,15 @@
       border-radius: 14px;
       color: var(--text);
       font-size: 0.96rem;
-      line-height: 1.7;
-      white-space: pre-line;
+      line-height: 1.75;
       display: none;
     }
+    .rich-output h3 { color: var(--accent-light); font-size: 1.1rem; margin: 1rem 0 0.4rem; }
+    .rich-output h3:first-child { margin-top: 0; }
+    .rich-output ul { padding-left: 1.35rem; margin: 0.5rem 0; }
+    .rich-output li { margin-bottom: 0.35rem; }
+    .rich-output strong { color: #fff; }
+    .rich-output p { margin-bottom: 0.65rem; }
 
     .output-actions {
       display: flex;
@@ -474,27 +511,30 @@
       border-top: 1px solid var(--border);
     }
 
+    /* 3D Flashcards */
     .flashcards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 1rem;
       margin-top: 1.5rem;
+      perspective: 1000px;
     }
     .flashcard {
       background: rgba(7, 9, 15, 0.75);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 1.5rem;
-      min-height: 175px;
+      min-height: 185px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       cursor: pointer;
-      transition: all 0.25s ease;
+      outline: none;
+      transition: transform 0.28s ease, border-color 0.25s ease, background 0.25s ease;
     }
-    .flashcard:hover { border-color: var(--accent-light); transform: translateY(-3px); }
+    .flashcard:hover, .flashcard:focus { border-color: var(--accent-light); transform: translateY(-3px); }
     .flashcard.flipped {
-      background: rgba(124, 58, 237, 0.14);
+      background: rgba(124, 58, 237, 0.16);
       border-color: var(--accent-light);
     }
     .flashcard-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-light); font-weight: 700; }
@@ -506,11 +546,40 @@
       padding-top: 1.25rem;
       border-top: 1px solid var(--border);
     }
+    .deck-chip {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .deck-chip-load {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 0.42rem 0.8rem;
+      font-size: 0.83rem;
+      cursor: pointer;
+    }
+    .deck-chip-load:hover { background: rgba(124, 58, 237, 0.18); }
+    .deck-chip-del {
+      background: transparent;
+      border: none;
+      border-left: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.42rem 0.65rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .deck-chip-del:hover { color: var(--danger); background: rgba(239, 68, 68, 0.15); }
 
     .quiz-scoreboard {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
       background: rgba(124, 58, 237, 0.12);
       border: 1px solid var(--border-hover);
       padding: 0.85rem 1.2rem;
@@ -542,12 +611,22 @@
     .quiz-opt:hover { border-color: var(--accent-light); background: var(--surface-hover); }
     .quiz-opt.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); color: #6ee7b7; font-weight: 600; }
     .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: #fca5a5; }
+    .quiz-explanation {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 0.86rem;
+      display: none;
+    }
 
     .timer-modes {
       display: flex;
       justify-content: center;
       gap: 0.5rem;
       margin-bottom: 0.5rem;
+      flex-wrap: wrap;
     }
     .timer-container { text-align: center; padding: 1rem 0; }
     .timer-display {
@@ -700,8 +779,10 @@
     @media (max-width: 900px) {
       aside { transform: translateX(-100%); }
       aside.mobile-open { transform: translateX(0); }
-      .main-content { margin-left: 0; max-width: 100%; padding: 1.5rem; }
+      .main-content { margin-left: 0; max-width: 100%; padding: 1.25rem; }
       .mobile-menu-toggle { display: block !important; }
+      .input-row { flex-direction: column; }
+      .input-row input[type="date"] { max-width: 100% !important; }
     }
     .mobile-menu-toggle { display: none; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
   </style>
@@ -745,9 +826,12 @@
         <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
         <h3 id="currentHeaderTitle" style="font-size: 1.15rem; font-weight: 700;">Dashboard</h3>
       </div>
-      <div class="ai-badge">
-        <span class="api-status-dot"></span>
-        <span>Gemini Flash Active</span>
+      <div class="header-right-group">
+        <div class="live-clock-pill" id="liveClockPill" onclick="switchView('planner')" title="Open Study Timer">--:-- --</div>
+        <div class="ai-badge" id="aiEngineBadge" onclick="switchView('settings')" title="Configure AI Engine">
+          <span class="api-status-dot"></span>
+          <span id="aiEngineLabel">Checking AI...</span>
+        </div>
       </div>
     </div>
 
@@ -827,7 +911,7 @@
             <button class="action-btn" id="tutorBtn" onclick="runTutor()">Ask Zuno</button>
           </div>
           <div id="tutorOutput" class="output-box">
-            <div id="tutorText"></div>
+            <div id="tutorText" class="rich-output"></div>
             <div class="output-actions">
               <button class="secondary-btn" onclick="speakText('tutorText')">🔊 Read Aloud</button>
               <button class="secondary-btn" onclick="copyText('tutorText')">📋 Copy</button>
@@ -842,9 +926,9 @@
         <div class="workspace-box">
           <div class="workspace-header">
             <h2>🗂️ Smart Flashcards</h2>
-            <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
               <button class="secondary-btn" id="saveDeckBtn" style="display: none;" onclick="saveCurrentDeck()">💾 Save Deck</button>
-              <span style="color: var(--muted); font-size: 0.85rem;">Click any card to flip</span>
+              <span style="color: var(--muted); font-size: 0.85rem;">Tap or press Space to flip</span>
             </div>
           </div>
           <div class="prompt-pills">
@@ -883,7 +967,10 @@
           </div>
           <div id="quizScoreboard" class="quiz-scoreboard" style="display: none;">
             <span id="quizScoreText">Score: 0 / 0</span>
-            <span id="quizStatusText" style="color: var(--accent-light);">Select answers below</span>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="secondary-btn" id="missedToCardsBtn" style="display: none;" onclick="turnMissedIntoCards()">🗂️ Study Missed Questions</button>
+              <button class="secondary-btn" onclick="runQuiz()">↻ New Quiz</button>
+            </div>
           </div>
           <div id="quizContainer"></div>
         </div>
@@ -901,7 +988,7 @@
             <button class="action-btn" id="essayBtn" onclick="runEssay()">Build Outline</button>
           </div>
           <div id="essayOutput" class="output-box">
-            <div id="essayText"></div>
+            <div id="essayText" class="rich-output"></div>
             <div class="output-actions">
               <button class="secondary-btn" onclick="copyText('essayText')">📋 Copy</button>
               <button class="secondary-btn" onclick="downloadTxt('essayText', 'Zuno_Essay_Outline.txt')">📥 Export Outline</button>
@@ -923,7 +1010,7 @@
             <button class="action-btn" id="notesBtn" onclick="runNotes()">Analyze Notes</button>
           </div>
           <div id="notesOutput" class="output-box">
-            <div id="notesResultText"></div>
+            <div id="notesResultText" class="rich-output"></div>
             <div class="output-actions">
               <button class="secondary-btn" onclick="notesToFlashcards()">🗂️ Turn into Flashcards</button>
               <button class="secondary-btn" onclick="notesToQuiz()">📝 Quiz Me on Notes</button>
@@ -962,7 +1049,7 @@
               <button class="pill" id="audio-rain" onclick="toggleAudio('rain')">🌧️ Rain</button>
               <button class="pill" id="audio-cafe" onclick="toggleAudio('cafe')">☕ Coffee Shop</button>
               <button class="pill" onclick="stopAudio()">⏹️ Stop</button>
-              <input type="range" id="audioVolume" min="0.01" max="0.2" step="0.01" value="0.06" style="width: 85px; padding: 0;" onchange="updateVolume(this.value)" title="Volume" />
+              <input type="range" id="audioVolume" min="0.01" max="0.2" step="0.01" value="0.06" style="width: 85px; padding: 0;" oninput="updateVolume(this.value)" title="Volume" />
             </div>
           </div>
         </div>
@@ -1038,9 +1125,9 @@
 
           <!-- GEMINI API CONFIG -->
           <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
-            <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">⚡ Google Gemini Flash-Lite Engine</h3>
+            <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">⚡ Google Gemini 2.5 Flash Engine</h3>
             <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 0.85rem;">
-              Paste your free API key from <a href="https://aistudio.google.com/apikey" target="_blank" style="color: var(--accent-light);">Google AI Studio</a> (gives you 500 requests/day). Stored locally in your browser.
+              Paste your free API key from <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color: var(--accent-light);">Google AI Studio</a> for fast streaming AI responses. Stored locally in your browser.
             </p>
             <div class="input-row">
               <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
@@ -1052,7 +1139,7 @@
             <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;">Account & Cloud Sync</h3>
             <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem;">Export or restore your progress (XP, Decks, Tasks) across devices.</p>
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-              <button class="secondary-btn" onclick="exportCloudBackup()">📤 Export Cloud Backup JSON</button>
+              <button class="secondary-btn" onclick="exportCloudBackup()">📤 Export Backup JSON</button>
               <button class="secondary-btn" onclick="document.getElementById('importFile').click()">📥 Import Backup JSON</button>
               <input type="file" id="importFile" style="display: none;" onchange="importCloudBackup(event)" accept=".json" />
             </div>
@@ -1098,7 +1185,7 @@
         <h3 style="font-size: 1.25rem; font-weight: 700;">👤 Zuno Student Account</h3>
         <button onclick="closeAuthModal()" style="background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer;">✕</button>
       </div>
-      <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Log in or create your student account to sync your XP, decks, and streak.</p>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Log in or create your student account to track your XP, decks, and streak.</p>
       <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
         <input type="text" id="authUsernameInput" placeholder="Username (e.g. alex_study)..." />
         <input type="password" id="authPasswordInput" placeholder="Password..." onkeydown="if(event.key==='Enter') loginUser()" />
@@ -1116,11 +1203,19 @@
   <div id="toast"></div>
 
   <script>
+    const GEMINI_MODEL = 'gemini-2.5-flash';
+    // SHA-256 hash of admin passcode so it's not exposed in plaintext
+    const ADMIN_PASS_HASH = 'f701f1f24e678c47e5eb12516e54b5e9150b541b25f8967d0f62d48f60279d0a';
+
     window.addEventListener('DOMContentLoaded', () => {
       const savedKey = localStorage.getItem('zuno_gemini_key');
       if (savedKey) {
         document.getElementById('geminiKeyInput').value = savedKey;
       }
+      updateAIEngineBadge();
+      updateDailyStreak();
+      startLiveClock();
+
       if (localStorage.getItem('zuno_admin_unlocked') === 'true') {
         const lockBox = document.getElementById('secretLockBox');
         const adminPanel = document.getElementById('secretAdminPanel');
@@ -1133,6 +1228,29 @@
       renderTasks();
     });
 
+    function startLiveClock() {
+      const clockEl = document.getElementById('liveClockPill');
+      const tick = () => {
+        const now = new Date();
+        clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      };
+      tick();
+      setInterval(tick, 10000);
+    }
+
+    function updateAIEngineBadge() {
+      const badge = document.getElementById('aiEngineBadge');
+      const label = document.getElementById('aiEngineLabel');
+      const hasKey = !!localStorage.getItem('zuno_gemini_key');
+      if (hasKey) {
+        badge.classList.remove('fallback-mode');
+        label.textContent = 'Gemini 2.5 Flash Active';
+      } else {
+        badge.classList.add('fallback-mode');
+        label.textContent = 'Free AI Mode (Add Key)';
+      }
+    }
+
     function toggleMobileMenu() {
       document.getElementById('sidebar').classList.toggle('mobile-open');
     }
@@ -1141,34 +1259,69 @@
       const key = document.getElementById('geminiKeyInput').value.trim();
       if (!key) {
         localStorage.removeItem('zuno_gemini_key');
+        updateAIEngineBadge();
         showToast('Gemini API key cleared.');
         return;
       }
       localStorage.setItem('zuno_gemini_key', key);
-      showToast('⚡ Gemini Flash-Lite key saved!');
+      updateAIEngineBadge();
+      showToast('⚡ Gemini 2.5 Flash key saved!');
+    }
+
+    function formatMarkdown(raw) {
+      const escaped = raw
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      const lines = escaped.split('\n');
+      let html = '';
+      let inList = false;
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) {
+          if (inList) { html += '</ul>'; inList = false; }
+          continue;
+        }
+        if (trimmed.startsWith('### ') || trimmed.startsWith('## ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          const headingText = trimmed.replace(/^#{2,3}\s+/, '').replace(/\*\*(.*?)\*\*/g, '$1');
+          html += `<h3>${headingText}</h3>`;
+        } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          if (!inList) { html += '<ul>'; inList = true; }
+          const itemText = trimmed.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          html += `<li>${itemText}</li>`;
+        } else {
+          if (inList) { html += '</ul>'; inList = false; }
+          const pText = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          html += `<p>${pText}</p>`;
+        }
+      }
+      if (inList) html += '</ul>';
+      return html;
     }
 
     async function callAI(promptText) {
       const geminiKey = localStorage.getItem('zuno_gemini_key');
 
       if (geminiKey) {
-        try {
-          const res = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${encodeURIComponent(geminiKey)}`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: { temperature: 0.4 }
-              })
-            }
-          );
-          if (res.ok) {
-            const data = await res.json();
-            return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(geminiKey)}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }],
+              generationConfig: { temperature: 0.4 }
+            })
           }
-        } catch (e) {}
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) return text;
+        }
       }
 
       const fallback = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}`);
@@ -1181,15 +1334,15 @@
       const geminiKey = localStorage.getItem('zuno_gemini_key');
 
       if (!geminiKey) {
-        targetEl.textContent = '⏳ Using public fallback (add a free Gemini key in ⚙️ Settings for instant speed)...\n\n';
+        targetEl.innerHTML = '<p style="color: var(--muted);">⏳ Generating with public AI (add a free Gemini key in ⚙️ Settings for instant streaming)...</p>';
         const text = await callAI(promptText);
-        targetEl.textContent = text;
+        targetEl.innerHTML = formatMarkdown(text);
         return;
       }
 
       try {
         const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${encodeURIComponent(geminiKey)}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${encodeURIComponent(geminiKey)}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1205,7 +1358,8 @@
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
-        targetEl.textContent = '';
+        let fullAccumulated = '';
+        targetEl.innerHTML = '';
 
         while (true) {
           const { done, value } = await reader.read();
@@ -1221,14 +1375,17 @@
               try {
                 const json = JSON.parse(trimmed.slice(6));
                 const chunkText = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                if (chunkText) targetEl.textContent += chunkText;
+                if (chunkText) {
+                  fullAccumulated += chunkText;
+                  targetEl.innerHTML = formatMarkdown(fullAccumulated);
+                }
               } catch (e) {}
             }
           }
         }
       } catch (err) {
         const fullText = await callAI(promptText);
-        targetEl.textContent = fullText;
+        targetEl.innerHTML = formatMarkdown(fullText);
       }
     }
 
@@ -1236,20 +1393,30 @@
     let userXP = parseInt(localStorage.getItem('zuno_xp') || '0', 10);
     let userStreak = parseInt(localStorage.getItem('zuno_streak') || '1', 10);
 
+    function updateDailyStreak() {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const lastVisit = localStorage.getItem('zuno_last_visit');
+      if (!lastVisit) {
+        userStreak = 1;
+      } else if (lastVisit !== todayStr) {
+        const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        userStreak = (lastVisit === yesterday) ? userStreak + 1 : 1;
+      }
+      localStorage.setItem('zuno_last_visit', todayStr);
+      localStorage.setItem('zuno_streak', userStreak);
+      updateStatsUI();
+    }
+
     function updateNavUser() {
       const navUserSpan = document.getElementById('navUsername');
-      if (currentUser) {
-        navUserSpan.textContent = currentUser;
-      } else {
-        navUserSpan.textContent = 'Sign In';
-      }
+      navUserSpan.textContent = currentUser ? currentUser : 'Sign In';
     }
     updateNavUser();
 
     function openAuthModal() {
       const activeUserText = document.getElementById('modalActiveUser');
       const loggedInDiv = document.getElementById('loggedInControl');
-      
+
       if (currentUser) {
         activeUserText.textContent = currentUser;
         loggedInDiv.style.display = 'block';
@@ -1276,7 +1443,7 @@
 
       currentUser = username;
       localStorage.setItem('zuno_username', currentUser);
-      
+
       const savedUserXP = localStorage.getItem(`zuno_xp_${currentUser}`);
       if (savedUserXP !== null) {
         userXP = parseInt(savedUserXP, 10);
@@ -1296,16 +1463,12 @@
       updateNavUser();
       closeAuthModal();
       showToast('Logged out successfully.');
-      setTimeout(() => location.reload(), 1000);
+      setTimeout(() => location.reload(), 800);
     }
 
     function exportCloudBackup() {
-      if (!currentUser) {
-        showToast('⚠️ Please sign in to export your account backup.');
-        return;
-      }
       const backupData = {
-        username: currentUser,
+        username: currentUser || 'guest',
         xp: userXP,
         streak: userStreak,
         tasks: JSON.parse(localStorage.getItem('zuno_tasks') || '[]'),
@@ -1315,9 +1478,9 @@
       const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `Zuno_Backup_${currentUser}.json`;
+      link.download = `Zuno_Backup_${backupData.username}.json`;
       link.click();
-      showToast('📤 Cloud backup exported!');
+      showToast('📤 Backup JSON exported!');
     }
 
     function importCloudBackup(event) {
@@ -1333,7 +1496,7 @@
             if (currentUser) localStorage.setItem(`zuno_xp_${currentUser}`, userXP);
           }
           if (data.streak !== undefined) localStorage.setItem('zuno_streak', data.streak);
-          if (data.username) {
+          if (data.username && data.username !== 'guest') {
             localStorage.setItem('zuno_username', data.username);
             currentUser = data.username;
             updateNavUser();
@@ -1341,10 +1504,10 @@
           if (data.tasks) localStorage.setItem('zuno_tasks', JSON.stringify(data.tasks));
           if (data.savedDecks) localStorage.setItem('zuno_saved_decks', JSON.stringify(data.savedDecks));
           if (data.theme) localStorage.setItem('zuno_theme', data.theme);
-          
-          showToast('📥 Backup restored successfully! Refreshing...');
-          setTimeout(() => location.reload(), 1500);
-        } catch(err) {
+
+          showToast('📥 Backup restored! Refreshing...');
+          setTimeout(() => location.reload(), 1200);
+        } catch (err) {
           showToast('⚠️ Invalid backup file format.');
         }
       };
@@ -1368,7 +1531,7 @@
 
       document.getElementById('xpDisplay').textContent = `⚡ Lvl ${level} • ${userXP} XP`;
       document.getElementById('xpBarFill').style.width = `${progressPercent}%`;
-      document.getElementById('streakDisplay').textContent = `🔥 ${userStreak} Day Streak`;
+      document.getElementById('streakDisplay').textContent = `🔥 ${userStreak} Day${userStreak === 1 ? '' : 's'} Streak`;
     }
     updateStatsUI();
 
@@ -1421,13 +1584,20 @@
     const savedTheme = localStorage.getItem('zuno_theme');
     if (savedTheme) setTheme(savedTheme);
 
-    function checkSecretCode() {
+    async function sha256Hex(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkSecretCode() {
       const code = document.getElementById('secretCodeInput').value.trim();
       const errorMsg = document.getElementById('secretError');
       const lockBox = document.getElementById('secretLockBox');
       const adminPanel = document.getElementById('secretAdminPanel');
 
-      if (code === '693950121') {
+      const hashed = await sha256Hex(code);
+      if (hashed === ADMIN_PASS_HASH) {
+        errorMsg.style.display = 'none';
         lockBox.style.display = 'none';
         adminPanel.style.display = 'block';
         localStorage.setItem('zuno_admin_unlocked', 'true');
@@ -1490,7 +1660,7 @@
 
       try {
         await streamAI(
-          `You are Zuno Pro, an expert student academic tutor. Provide an in-depth, clear explanation of: "${input}". Include key definitions, bullet points, and an easy memory trick.`,
+          `You are Zuno Pro, an expert student academic tutor. Provide a clear, well-structured explanation of: "${input}". Use ## headings, bullet points for key definitions, and end with a short memory trick.`,
           'tutorText'
         );
         addXP(25);
@@ -1503,14 +1673,16 @@
     }
 
     let currentCardsData = [];
+    let currentDeckTitle = '';
 
     function quickCards(t) {
       document.getElementById('cardsInput').value = t;
       runFlashcards();
     }
 
-    function renderCards(cards) {
+    function renderCards(cards, titleOverride) {
       currentCardsData = cards;
+      if (titleOverride) currentDeckTitle = titleOverride;
       const container = document.getElementById('cardsContainer');
       const saveBtn = document.getElementById('saveDeckBtn');
       container.innerHTML = '';
@@ -1519,45 +1691,54 @@
       cards.forEach((c, i) => {
         const div = document.createElement('div');
         div.className = 'flashcard';
+        div.tabIndex = 0;
         let showingBack = false;
         div.innerHTML = `
           <div class="flashcard-label">Card ${i + 1} • Front</div>
           <div class="flashcard-text">${c.front}</div>
           <div class="flashcard-hint">Tap or press Space to flip ↻</div>
         `;
-        div.onclick = () => {
+        const flip = () => {
           showingBack = !showingBack;
           div.classList.toggle('flipped', showingBack);
           div.querySelector('.flashcard-label').textContent = showingBack ? `Card ${i + 1} • Answer` : `Card ${i + 1} • Front`;
           div.querySelector('.flashcard-text').textContent = showingBack ? c.back : c.front;
         };
+        div.onclick = flip;
+        div.onkeydown = (e) => {
+          if (e.code === 'Space' || e.key === 'Enter') {
+            e.preventDefault();
+            flip();
+          }
+        };
         container.appendChild(div);
       });
-      addXP(20);
     }
 
-    async function runFlashcards(topicParam) {
+    async function runFlashcards(topicParam, customTitle) {
       const topic = topicParam || document.getElementById('cardsInput').value.trim();
       const btn = document.getElementById('cardsBtn');
       const container = document.getElementById('cardsContainer');
       if (!topic) return;
 
+      currentDeckTitle = customTitle || document.getElementById('cardsInput').value.trim() || 'Study Deck';
       btn.disabled = true;
       btn.textContent = 'Generating...';
-      container.innerHTML = '<p style="color: var(--muted);">⚡ Building professional flashcards...</p>';
+      container.innerHTML = '<p style="color: var(--muted);">⚡ Building active-recall flashcards...</p>';
 
       try {
-        const prompt = `Create 4 high-yield study flashcards about "${topic}". Return ONLY a raw JSON array with no markdown: [{"front":"question or term","back":"short clear answer"}]`;
+        const prompt = `Create 6 high-yield study flashcards about "${topic}". Return ONLY a raw JSON array with no markdown: [{"front":"question or term","back":"short clear answer"}]`;
         const aiReply = await callAI(prompt);
         const jsonMatch = aiReply.match(/\[[\s\S]*\]/);
         const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : aiReply);
-        renderCards(parsed);
+        renderCards(parsed, currentDeckTitle);
+        addXP(20);
       } catch (err) {
         renderCards([
-          { front: `Key Term: ${topic}`, back: `Core concept and professional definition.` },
-          { front: `Significance`, back: `Why this matters in examinations.` },
-          { front: `Application`, back: `Practical real-world scenario.` }
-        ]);
+          { front: `Key Concept: ${currentDeckTitle}`, back: `Core definition and fundamental principle.` },
+          { front: `Exam Significance`, back: `Why this concept frequently appears on tests.` },
+          { front: `Real-World Example`, back: `Practical application of this topic.` }
+        ], currentDeckTitle);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Create Cards';
@@ -1566,12 +1747,20 @@
 
     function saveCurrentDeck() {
       if (!currentCardsData.length) return;
-      const topicName = document.getElementById('cardsInput').value.trim() || 'Study Deck';
+      const topicName = currentDeckTitle || document.getElementById('cardsInput').value.trim() || 'Study Deck';
       let savedDecks = JSON.parse(localStorage.getItem('zuno_saved_decks') || '[]');
       savedDecks.push({ title: topicName, cards: currentCardsData });
       localStorage.setItem('zuno_saved_decks', JSON.stringify(savedDecks));
       loadSavedDecks();
-      showToast('💾 Deck saved successfully!');
+      showToast(`💾 Saved "${topicName}"!`);
+    }
+
+    function deleteSavedDeck(idx) {
+      let savedDecks = JSON.parse(localStorage.getItem('zuno_saved_decks') || '[]');
+      savedDecks.splice(idx, 1);
+      localStorage.setItem('zuno_saved_decks', JSON.stringify(savedDecks));
+      loadSavedDecks();
+      showToast('🗑️ Deck removed.');
     }
 
     function loadSavedDecks() {
@@ -1583,15 +1772,21 @@
       if (savedDecks.length > 0) {
         section.style.display = 'block';
         savedDecks.forEach((deck, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'pill';
-          btn.textContent = `📁 ${deck.title}`;
-          btn.onclick = () => {
-            renderCards(deck.cards);
+          const chip = document.createElement('div');
+          chip.className = 'deck-chip';
+          chip.innerHTML = `
+            <button class="deck-chip-load">📁 ${deck.title} (${deck.cards.length})</button>
+            <button class="deck-chip-del" title="Delete deck">✕</button>
+          `;
+          chip.querySelector('.deck-chip-load').onclick = () => {
+            renderCards(deck.cards, deck.title);
             showToast(`Loaded "${deck.title}"`);
           };
-          list.appendChild(btn);
+          chip.querySelector('.deck-chip-del').onclick = () => deleteSavedDeck(idx);
+          list.appendChild(chip);
         });
+      } else {
+        section.style.display = 'none';
       }
     }
 
@@ -1602,6 +1797,8 @@
 
     let quizCorrectCount = 0;
     let quizTotalCount = 0;
+    let currentQuizQuestions = [];
+    let missedQuestions = [];
 
     async function runQuiz(topicParam) {
       const topic = topicParam || document.getElementById('quizInput').value.trim();
@@ -1615,14 +1812,17 @@
       container.innerHTML = '<p style="color: var(--muted); margin-top: 1rem;">⚡ Generating custom quiz questions...</p>';
 
       try {
-        const prompt = `Create 3 multiple choice questions about "${topic}". Return ONLY a raw JSON array with no markdown: [{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0}] where correct is the 0-indexed correct option.`;
+        const prompt = `Create 4 multiple choice questions about "${topic}". Return ONLY a raw JSON array with no markdown: [{"question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"correct":0,"explanation":"brief 1-sentence reason"}] where correct is the 0-indexed correct option.`;
         const aiReply = await callAI(prompt);
         const jsonMatch = aiReply.match(/\[[\s\S]*\]/);
         const questions = JSON.parse(jsonMatch ? jsonMatch[0] : aiReply);
 
+        currentQuizQuestions = questions;
+        missedQuestions = [];
         quizCorrectCount = 0;
         quizTotalCount = questions.length;
         scoreboard.style.display = 'flex';
+        document.getElementById('missedToCardsBtn').style.display = 'none';
         updateScoreboard();
 
         container.innerHTML = '';
@@ -1633,9 +1833,10 @@
             <div class="quiz-q">Q${qIndex + 1}: ${q.question}</div>
             <div class="quiz-options">
               ${q.options.map((opt, optIndex) => `
-                <button class="quiz-opt" onclick="checkQuizAnswer(this, ${optIndex}, ${q.correct})">${opt}</button>
+                <button class="quiz-opt" onclick="checkQuizAnswer(this, ${qIndex}, ${optIndex}, ${q.correct})">${opt}</button>
               `).join('')}
             </div>
+            <div class="quiz-explanation" id="quiz-exp-${qIndex}">${q.explanation || ''}</div>
           `;
           container.appendChild(qDiv);
         });
@@ -1651,10 +1852,11 @@
       document.getElementById('quizScoreText').textContent = `Score: ${quizCorrectCount} / ${quizTotalCount}`;
     }
 
-    function checkQuizAnswer(btn, chosen, correct) {
+    function checkQuizAnswer(btn, qIndex, chosen, correct) {
       const parent = btn.parentElement;
       const opts = parent.querySelectorAll('.quiz-opt');
-      let isRight = (chosen === correct);
+      const expEl = document.getElementById(`quiz-exp-${qIndex}`);
+      const isRight = (chosen === correct);
 
       opts.forEach((o, idx) => {
         o.style.pointerEvents = 'none';
@@ -1662,14 +1864,34 @@
         else if (idx === chosen) o.classList.add('wrong');
       });
 
+      if (expEl && expEl.textContent.trim()) {
+        expEl.style.display = 'block';
+      }
+
       if (isRight) {
         quizCorrectCount++;
         addXP(20);
         showToast('Correct! +20 XP 🎉');
       } else {
-        showToast('Incorrect!');
+        const qObj = currentQuizQuestions[qIndex];
+        if (qObj) {
+          missedQuestions.push({
+            front: qObj.question,
+            back: `${qObj.options[qObj.correct]}${qObj.explanation ? ' — ' + qObj.explanation : ''}`
+          });
+          document.getElementById('missedToCardsBtn').style.display = 'inline-block';
+        }
+        showToast('Incorrect — check the explanation!');
       }
       updateScoreboard();
+    }
+
+    function turnMissedIntoCards() {
+      if (!missedQuestions.length) return;
+      const topic = document.getElementById('quizInput').value.trim() || 'Missed Quiz Review';
+      switchView('flashcards');
+      renderCards(missedQuestions, `${topic} (Missed Review)`);
+      showToast('🗂️ Created deck from missed questions!');
     }
 
     async function runEssay() {
@@ -1684,7 +1906,7 @@
 
       try {
         await streamAI(
-          `Write an academic essay outline and thesis statement for: "${promptText}". Include Thesis, 3 Body Paragraph points, and Conclusion.`,
+          `Write a structured academic essay outline and thesis statement for: "${promptText}". Use ## headings for Hook & Thesis Statement, Body Paragraph 1, Body Paragraph 2, Body Paragraph 3, and Conclusion, with bullet points for evidence.`,
           'essayText'
         );
         addXP(30);
@@ -1712,8 +1934,8 @@
 
       try {
         const prompt = question
-          ? `Based on these notes, answer "${question}" concisely and list key takeaways:\n\n${notes}`
-          : `Summarize these notes into concise, high-yield bullet points:\n\n${notes}`;
+          ? `Based on these notes, answer "${question}" clearly and list key takeaways with bullet points:\n\n${notes}`
+          : `Summarize these notes into concise, high-yield study bullet points with ## section headings:\n\n${notes}`;
         await streamAI(prompt, 'notesResultText');
         addXP(20);
       } catch (err) {
@@ -1729,9 +1951,10 @@
         showToast('Please analyze notes first!');
         return;
       }
+      const cleanLabel = lastAnalyzedNotes.split(/\s+/).slice(0, 5).join(' ') + ' Notes';
       switchView('flashcards');
-      document.getElementById('cardsInput').value = lastAnalyzedNotes.substring(0, 45) + '...';
-      runFlashcards(lastAnalyzedNotes);
+      document.getElementById('cardsInput').value = cleanLabel;
+      runFlashcards(lastAnalyzedNotes, cleanLabel);
     }
 
     function notesToQuiz() {
@@ -1739,8 +1962,9 @@
         showToast('Please analyze notes first!');
         return;
       }
+      const cleanLabel = lastAnalyzedNotes.split(/\s+/).slice(0, 5).join(' ') + ' Notes';
       switchView('quiz');
-      document.getElementById('quizInput').value = lastAnalyzedNotes.substring(0, 45) + '...';
+      document.getElementById('quizInput').value = cleanLabel;
       runQuiz(lastAnalyzedNotes);
     }
 
@@ -1764,7 +1988,9 @@
     function updateTimerDisplay() {
       const mins = Math.floor(timeLeft / 60);
       const secs = timeLeft % 60;
-      document.getElementById('timerDisplay').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      document.getElementById('timerDisplay').textContent = formatted;
+      document.title = isRunning ? `(${formatted}) Zuno Pro` : 'Zuno Pro — Ultimate AI Study Suite';
     }
 
     function toggleTimer() {
@@ -1780,6 +2006,7 @@
             clearInterval(timerInterval);
             isRunning = false;
             btn.textContent = 'Start Focus';
+            document.title = 'Zuno Pro — Ultimate AI Study Suite';
             addXP(50);
             showToast('🎉 Focus session completed! +50 XP');
           }
@@ -1809,7 +2036,7 @@
       masterGain = audioCtx.createGain();
       masterGain.gain.value = parseFloat(document.getElementById('audioVolume').value);
       masterGain.connect(audioCtx.destination);
-      
+
       if (type === 'rain') {
         const bufferSize = audioCtx.sampleRate * 2;
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -1872,7 +2099,7 @@
 
     function stopAudio() {
       activeNodes.forEach(node => {
-        try { node.stop(); } catch(e){}
+        try { node.stop(); } catch (e) {}
       });
       activeNodes = [];
       if (audioCtx) {
@@ -1940,4 +2167,3 @@
   </script>
 </body>
 </html>
-   
